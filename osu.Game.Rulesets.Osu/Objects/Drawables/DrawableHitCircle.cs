@@ -176,6 +176,7 @@ namespace osu.Game.Rulesets.Osu.Objects.Drawables
 
         /// <summary>
         /// Retrieves the <see cref="HitResult"/> for a time offset.
+        /// It is the most important logic of osu
         /// </summary>
         /// <param name="timeOffset">The time offset.</param>
         /// <returns>The hit result, or <see cref="HitResult.None"/> if <paramref name="timeOffset"/> doesn't result in a judgement.</returns>
