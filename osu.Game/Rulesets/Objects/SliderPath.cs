@@ -46,7 +46,8 @@ namespace osu.Game.Rulesets.Objects
         private readonly Cached pathCache = new Cached();
 
         /// <summary>
-        /// Any additional length of the path which was optimised out during piecewise approximation, but should still be considered as part of <see cref="calculatedLength"/>.
+        /// Any additional length of the path which was optimised out during piecewise approximation,
+        /// but should still be considered as part of <see cref="calculatedLength"/>.
         /// </summary>
         /// <remarks>
         /// This is a hack for Catmull paths.
@@ -267,6 +268,7 @@ namespace osu.Game.Rulesets.Objects
             return segmentEndDistances.Select(d => d / Distance);
         }
 
+        // Throw exception here lead to the disappearance of the slider
         private void invalidate()
         {
             pathCache.Invalidate();
@@ -293,6 +295,7 @@ namespace osu.Game.Rulesets.Objects
             if (ControlPoints.Count == 0)
                 return;
 
+            // 收集整個Slider的所有錨點
             Vector2[] vertices = new Vector2[ControlPoints.Count];
             for (int i = 0; i < ControlPoints.Count; i++)
                 vertices[i] = ControlPoints[i].Position;
@@ -306,9 +309,10 @@ namespace osu.Game.Rulesets.Objects
 
                 // The current vertex ends the segment
                 var segmentVertices = vertices.AsSpan().Slice(start, i - start + 1);
+                // 確定分段的類型
                 var segmentType = ControlPoints[start].Type ?? PathType.LINEAR;
 
-                // No need to calculate path when there is only 1 vertex
+                // No need to calculate path when there is only 1 vertex(EndPoint)
                 if (segmentVertices.Length == 1)
                     calculatedPath.Add(segmentVertices[0]);
                 else if (segmentVertices.Length > 1)
@@ -352,7 +356,8 @@ namespace osu.Game.Rulesets.Objects
                         break;
 
                     // taken from https://github.com/ppy/osu-framework/blob/1201e641699a1d50d2f6f9295192dad6263d5820/osu.Framework/Utils/PathApproximator.cs#L181-L186
-                    int subPoints = (2f * circularArcProperties.Radius <= 0.1f) ? 2 : Math.Max(2, (int)Math.Ceiling(circularArcProperties.ThetaRange / (2.0 * Math.Acos(1f - (0.1f / circularArcProperties.Radius)))));
+                    int subPoints = (2f * circularArcProperties.Radius <= 0.1f) ?
+                        2 : Math.Max(2, (int)Math.Ceiling(circularArcProperties.ThetaRange / (2.0 * Math.Acos(1f - (0.1f / circularArcProperties.Radius)))));
 
                     // 1000 subpoints requires an arc length of at least ~120 thousand to occur
                     // See here for calculations https://www.desmos.com/calculator/umj6jvmcz7

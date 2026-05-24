@@ -23,14 +23,17 @@ namespace osu.Game.Rulesets.Objects
         /// </summary>
         public const double TAIL_LENIENCY = -36;
 
-        public static IEnumerable<SliderEventDescriptor> Generate(double startTime, double spanDuration, double velocity, double tickDistance, double totalDistance, int spanCount,
-                                                                  CancellationToken cancellationToken = default)
+        public static IEnumerable<SliderEventDescriptor> Generate(
+            double startTime, double spanDuration, double velocity,
+            double tickDistance, double totalDistance, int spanCount,
+            CancellationToken cancellationToken = default)
         {
             // A very lenient maximum length of a slider for ticks to be generated.
             // This exists for edge cases such as /b/1573664 where the beatmap has been edited by the user, and should never be reached in normal usage.
             const double max_length = 100000;
 
             double length = Math.Min(max_length, totalDistance);
+            // Limit the distance to a
             tickDistance = Math.Clamp(tickDistance, 0, length);
 
             double minDistanceFromEnd = velocity * 10;

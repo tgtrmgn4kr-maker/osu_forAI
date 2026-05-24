@@ -20,7 +20,7 @@ namespace osu.Game.Skinning
         public Drawable Drawable { get; private set; } = null!;
 
         /// <summary>
-        /// Whether the drawable component should be centered in available space.
+        /// Whether the drawable component should be centred in available space.
         /// Defaults to true.
         /// </summary>
         public bool CentreComponent = true;

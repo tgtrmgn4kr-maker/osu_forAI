@@ -15,6 +15,7 @@ namespace osu.Game.Rulesets.Objects
     {
         /// <summary>
         /// The generated bar lines.
+        /// It is not for the Osu.Game I think.
         /// </summary>
         public readonly List<TBarLine> BarLines = new List<TBarLine>();
 
