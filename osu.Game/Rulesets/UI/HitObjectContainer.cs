@@ -23,6 +23,14 @@ namespace osu.Game.Rulesets.UI
 
         public IEnumerable<DrawableHitObject> AliveObjects => AliveEntries.Values.OrderBy(h => h.HitObject.StartTime);
 
+        public IEnumerable<DrawableHitObject> Get8AliveObjects()
+        {
+            if (AliveObjects.Count() >= 8)
+                return AliveObjects.Take(8);
+            else return AliveObjects.Take(AliveObjects.Count());
+        }
+
+
         /// <summary>
         /// Invoked when a <see cref="DrawableHitObject"/> is judged.
         /// </summary>

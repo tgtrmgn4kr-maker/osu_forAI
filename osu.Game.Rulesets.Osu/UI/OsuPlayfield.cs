@@ -5,6 +5,7 @@ using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Collections.Generic;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
@@ -88,6 +89,11 @@ namespace osu.Game.Rulesets.Osu.UI
             }, onJudgementLoaded));
 
             NewResult += onNewResult;
+        }
+
+        public partial class AIPlayfield : OsuPlayfield
+        {
+            public IEnumerable<DrawableHitObject> AliveObjects => HitObjectContainer.AliveObjects;
         }
 
         private IHitPolicy hitPolicy;

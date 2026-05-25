@@ -2,6 +2,10 @@ NOTE
 ===
 The Note is for the better developing experience
 
+## Osu.Game \ Skinning
+- \ IAnimationTimeReference.cs
+  - AnimationStartTime The time which animations should be started from
+
 ## Osu.Game \ Rulesets \ objects \ scoring
 - \ HitResult.cs
   - HitResult的定義

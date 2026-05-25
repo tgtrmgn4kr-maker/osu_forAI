@@ -138,7 +138,7 @@ namespace osu.Desktop
             switch (RuntimeInfo.OS)
             {
                 case RuntimeInfo.Platform.Windows:
-                    LoadComponentAsync(new GameplayWinKeyBlocker(), Add);
+                    //LoadComponentAsync(new GameplayWinKeyBlocker(), Add);
                     break;
 
                 case RuntimeInfo.Platform.macOS when !IsPackageManaged && IsDeployedBuild:
@@ -147,7 +147,7 @@ namespace osu.Desktop
                     break;
             }
 
-            LoadComponentAsync(new ElevatedPrivilegesChecker(), Add);
+            //LoadComponentAsync(new ElevatedPrivilegesChecker(), Add);
 
             osuSchemeLinkIPCChannel = new OsuSchemeLinkIPCChannel(Host, this);
             archiveImportIPCChannel = new ArchiveImportIPCChannel(Host, this);

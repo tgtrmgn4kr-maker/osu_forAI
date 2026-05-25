@@ -30,7 +30,7 @@ namespace osu.Game.Rulesets.Osu.UI
 
             DrawableHitObject? blockingObject = null;
 
-            foreach (var obj in enumerateHitObjectsUpTo(hitObject.HitObject.StartTime))
+            foreach (var obj in EnumerateHitObjectsUpTo(hitObject.HitObject.StartTime))
             {
                 if (hitObjectCanBlockFutureHits(obj))
                     blockingObject = obj;
@@ -60,7 +60,7 @@ namespace osu.Game.Rulesets.Osu.UI
                 throw new InvalidOperationException($"A {hitObject} was hit before it became hittable!");
 
             // Miss all hitobjects prior to the hit one.
-            foreach (var obj in enumerateHitObjectsUpTo(hitObject.HitObject.StartTime))
+            foreach (var obj in EnumerateHitObjectsUpTo(hitObject.HitObject.StartTime))
             {
                 if (obj.Judged)
                     continue;
@@ -77,7 +77,7 @@ namespace osu.Game.Rulesets.Osu.UI
         private static bool hitObjectCanBlockFutureHits(DrawableHitObject hitObject)
             => hitObject is DrawableHitCircle;
 
-        private IEnumerable<DrawableHitObject> enumerateHitObjectsUpTo(double targetTime)
+        public IEnumerable<DrawableHitObject> EnumerateHitObjectsUpTo(double targetTime)
         {
             foreach (var obj in HitObjectContainer!.AliveObjects)
             {
