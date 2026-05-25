@@ -36,6 +36,10 @@ The Note is for the better developing experience
 - \ SliderEventGenerator.cs
   - 畫出Slider需要的事件
 
+## Osu.Game \ Graphics \ Containers
+- \ ParallaxContainer.cs
+  - ln:69 Update 每一幀的Mouse Position
+
 ## Osu.Game.Rulesets.Osu
 - \ Drawables
   - \ DrawableHitCircle.cs

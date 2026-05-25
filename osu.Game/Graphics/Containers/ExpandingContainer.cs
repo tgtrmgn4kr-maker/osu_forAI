@@ -82,7 +82,7 @@ namespace osu.Game.Graphics.Containers
                 this.ResizeWidthTo(v.NewValue ? expandedWidth : contractedWidth, TRANSITION_DURATION, Easing.OutQuint);
             }, true);
 
-            inputManager = GetContainingInputManager()!;
+            inputManager = GetContainingInputManager();
         }
 
         protected override void Update()
