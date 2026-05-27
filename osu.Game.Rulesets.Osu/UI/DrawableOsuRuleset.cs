@@ -21,6 +21,7 @@ using osu.Game.Rulesets.UI;
 using osu.Game.Scoring;
 using osu.Game.Screens.Play;
 using osuTK;
+using osu.Game.Rulesets.Osu.AI;
 
 namespace osu.Game.Rulesets.Osu.UI
 {
@@ -32,16 +33,27 @@ namespace osu.Game.Rulesets.Osu.UI
 
         public new OsuPlayfield Playfield => (OsuPlayfield)base.Playfield;
 
+        private OsuPlayfield.AIPlayfield aIPlayfield = null!;
+
+        private ObjectTracker? objectTracker = null;
+        private RewardTracker? rewardTracker = null;
+
+
+
         protected new OsuRulesetConfigManager Config => (OsuRulesetConfigManager)base.Config;
 
         public DrawableOsuRuleset(Ruleset ruleset, IBeatmap beatmap, IReadOnlyList<Mod>? mods = null)
             : base(ruleset, beatmap, mods)
         {
+
         }
 
         [BackgroundDependencyLoader]
         private void load(ReplayPlayer? replayPlayer)
         {
+            objectTracker = new ObjectTracker(aIPlayfield);
+            rewardTracker = new RewardTracker(aIPlayfield);
+
             if (replayPlayer != null)
             {
                 ReplayAnalysisOverlay analysisOverlay;
@@ -61,7 +73,11 @@ namespace osu.Game.Rulesets.Osu.UI
 
         public override bool ReceivePositionalInputAt(Vector2 screenSpacePos) => true; // always show the gameplay cursor
 
-        protected override Playfield CreatePlayfield() => new OsuPlayfield();
+        protected override Playfield CreatePlayfield()
+        {
+            aIPlayfield = new OsuPlayfield.AIPlayfield();
+            return aIPlayfield;
+        }
 
         protected override PassThroughInputManager CreateInputManager() => new OsuInputManager(Ruleset.RulesetInfo);
 
@@ -75,6 +91,11 @@ namespace osu.Game.Rulesets.Osu.UI
             return new OsuResumeOverlay();
         }
 
+        protected override void Update()
+        {
+            base.Update();
+            objectTracker!.Update();
+        }
         protected override ReplayInputHandler CreateReplayInputHandler(Replay replay) => new OsuFramedReplayInputHandler(replay);
 
         protected override ReplayRecorder CreateReplayRecorder(Score score) => new OsuReplayRecorder(score);

@@ -3,6 +3,9 @@
 
 using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Judgements;
+using osu.Game.Rulesets.Osu.UI;
+using System.Collections.Generic;
+using osu.Framework.Logging;
 
 
 
@@ -10,20 +13,53 @@ namespace osu.Game.Rulesets.Osu.AI
 {
     public class RewardTracker
     {
+        public HashSet<DrawableHitObject> SubscribedObjects;
 
-        public void AIResultRegister(DrawableHitObject obj)
+        public struct ScoreContainer
         {
-            obj.OnNewResult += ScoreGetter;
+            public ScoreContainer()
+            {
+            }
+            public DrawableHitObject? HitObject = null;
+            public JudgementResult? Result = null;
         }
+        public RewardTracker(OsuPlayfield.AIPlayfield playfield)
+        {
+            this.playfield = playfield;
+            playfield.NewResult += onNewResult;
+            SubscribedObjects = new();
+        }
+        private OsuPlayfield.AIPlayfield? playfield;
 
+
+        // Not executed
+        private void onNewResult(DrawableHitObject obj, JudgementResult result)
+        {
+            CollectObjects();
+        }
+        public void CollectObjects()
+        {
+            var nextObjects = playfield?.HitObjectContainer.Get8AliveObjects();
+
+            if (nextObjects is null) return;
+
+            foreach (var obj in nextObjects)
+            {
+                if (SubscribedObjects.Contains(obj)) continue;
+
+                obj.OnNewResult += ScoreGetter;
+                SubscribedObjects.Add(obj);
+            }
+
+        }
         public void ScoreGetter(DrawableHitObject obj, JudgementResult result)
         {
-#pragma warning disable IDE0059 // Unnecessary assignment of a value
-            var type = result.Type;
-#pragma warning restore IDE0059 // Unnecessary assignment of a value
-#pragma warning disable IDE0059 // Unnecessary assignment of a value
-            int comboAfterJudgement = result.ComboAfterJudgement;
-#pragma warning restore IDE0059 // Unnecessary assignment of a value
+            ScoreContainer scoreContainer = new()
+            {
+                HitObject = obj,
+                Result = result
+            };
+            Logger.Log($"TimeOffset:{scoreContainer.Result.TimeOffset}");
         }
     }
 

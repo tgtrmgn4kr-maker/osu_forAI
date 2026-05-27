@@ -29,6 +29,7 @@ namespace osu.Game.Rulesets.UI
                 return AliveObjects.Take(8);
             else return AliveObjects.Take(AliveObjects.Count());
         }
+        public DrawableHitObject GetNextSlider() => AliveObjects.FirstOrDefault();
 
 
         /// <summary>

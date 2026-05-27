@@ -5,22 +5,24 @@ using osu.Game.Rulesets.Judgements;
 using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Osu.UI;
 using osu.Game.Rulesets.Osu.Objects;
+using osu.Framework.Logging;
+using osu.Game.Rulesets.Osu.Objects.Drawables;
+using osuTK;
 
-
-using System;
 
 
 namespace osu.Game.Rulesets.Osu.AI
 {
     public class ObjectTracker
     {
-        private OsuPlayfield.AIPlayfield? playfield;
-
-        public void AIObjectRegister(OsuPlayfield.AIPlayfield playfield)
+        public ObjectTracker(OsuPlayfield.AIPlayfield playfield)
         {
             this.playfield = playfield;
             playfield.NewResult += onNewResult;
         }
+
+        private OsuPlayfield.AIPlayfield? playfield;
+
         private void onNewResult(DrawableHitObject obj, JudgementResult result)
         {
             getNext8Objects();
@@ -36,14 +38,40 @@ namespace osu.Game.Rulesets.Osu.AI
                 if (obj.HitObject is OsuHitObject @object)
                 {
                     var osuObject = @object;
-                    osuTK.Vector2 position = osuObject.StackedPosition;
+                    Vector2 position = osuObject.StackedPosition;
                     double timeToHit = osuObject.StartTime;
                     var type = osuObject.GetType();
-                    Console.WriteLine($"Position:{position}");
-                    Console.WriteLine($"Time to hit:{timeToHit}");
-                    Console.WriteLine(type);
+                    Logger.Log($"Position: {position}");
+                    Logger.Log($"Time: {timeToHit}");
+                    Logger.Log($"Type: {type}");
                 }
+            }
+        }
+        public void Update()
+        {
+            getObjectTiming();
+            getSliderBallPosition();
+        }
 
+        private void getObjectTiming()
+        {
+        }
+        private void getSliderBallPosition()
+        {
+            var obj = playfield?.HitObjectContainer.GetNextSlider();
+            if (obj is null) return;
+            if (obj is DrawableSlider slider)
+            {
+                if (slider.Ball is not null)
+                {
+                    Vector2 ballPos = slider.Ball.Position;
+                    Logger.Log($"Position: {ballPos}");
+                }
+                else
+                {
+                    Vector2 headPos = slider.HeadCircle.HitObject.StackedPosition;
+                    Logger.Log(headPos.ToString());
+                }
             }
         }
     }
