@@ -17,11 +17,8 @@ namespace osu.Game.Rulesets.Osu.AI
 
         public struct ScoreContainer
         {
-            public ScoreContainer()
-            {
-            }
-            public DrawableHitObject? HitObject = null;
-            public JudgementResult? Result = null;
+            public DrawableHitObject? HitObject;
+            public JudgementResult? Result;
         }
         public RewardTracker(OsuPlayfield.AIPlayfield playfield)
         {
@@ -32,7 +29,6 @@ namespace osu.Game.Rulesets.Osu.AI
         private OsuPlayfield.AIPlayfield? playfield;
 
 
-        // Not executed
         private void onNewResult(DrawableHitObject obj, JudgementResult result)
         {
             CollectObjects();
@@ -59,7 +55,9 @@ namespace osu.Game.Rulesets.Osu.AI
                 HitObject = obj,
                 Result = result
             };
-            Logger.Log($"TimeOffset:{scoreContainer.Result.TimeOffset}");
+            Logger.Log($"Type: {scoreContainer.HitObject.GetType()}");
+            Logger.Log($"TimeOffset: {scoreContainer.Result.TimeOffset}");
+            Logger.Log($"Judgement: {scoreContainer.Result.Type}");
         }
     }
 

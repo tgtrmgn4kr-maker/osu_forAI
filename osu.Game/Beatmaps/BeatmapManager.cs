@@ -320,7 +320,9 @@ namespace osu.Game.Beatmaps
         public BeatmapInfo? QueryBeatmap(Expression<Func<BeatmapInfo, bool>> query) => Realm.Run(r =>
             r.All<BeatmapInfo>().Filter($@"{nameof(BeatmapInfo.BeatmapSet)}.{nameof(BeatmapSetInfo.DeletePending)} == false").FirstOrDefault(query)?.Detach());
 
-        /// <summary>
+
+#pragma warning disable IDE0001 // Simplify Names
+/// <summary>
         /// Perform a lookup query on available <see cref="BeatmapInfo"/>s.
         /// Use this overload instead of <see cref="QueryBeatmap(System.Linq.Expressions.Expression{System.Func{osu.Game.Beatmaps.BeatmapInfo,bool}})"/>
         /// when Realm is unable to transform an expression to the internal Realm query syntax.
@@ -333,6 +335,7 @@ namespace osu.Game.Beatmaps
              .Filter($@"{nameof(BeatmapInfo.BeatmapSet)}.{nameof(BeatmapSetInfo.DeletePending)} == false")
              .Filter(query, arguments)
              .FirstOrDefault()?.Detach());
+#pragma warning restore IDE0001 // Simplify Names
 
         /// <summary>
         /// Perform a lookup query on available <see cref="BeatmapInfo"/>s for a specific online ID.

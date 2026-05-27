@@ -17,6 +17,9 @@ using osu.Game.Storyboards;
 
 namespace osu.Game.Beatmaps
 {
+
+#pragma warning disable IDE0001 // Simplify Names
+#pragma warning disable IDE0001 // Simplify Names
     /// <summary>
     /// A more expensive representation of a beatmap which allows access to various associated resources.
     /// - Access textures and other resources via <see cref="GetStream"/>.
@@ -26,6 +29,8 @@ namespace osu.Game.Beatmaps
     /// - Create a playable <see cref="Beatmap"/> via <see cref="GetPlayableBeatmap(osu.Game.Rulesets.IRulesetInfo,System.Collections.Generic.IReadOnlyList{osu.Game.Rulesets.Mods.Mod})"/>.
     /// </summary>
     public interface IWorkingBeatmap
+#pragma warning restore IDE0001 // Simplify Names
+#pragma warning restore IDE0001 // Simplify Names
     {
         IBeatmapInfo BeatmapInfo { get; }
 
@@ -74,6 +79,10 @@ namespace osu.Game.Beatmaps
         /// </summary>
         Track Track { get; }
 
+
+#pragma warning disable IDE0001 // Simplify Names
+#pragma warning disable IDE0001 // Simplify Names
+#pragma warning disable IDE0001 // Simplify Names
         /// <summary>
         /// Constructs a playable <see cref="IBeatmap"/> from <see cref="Beatmap"/> using the applicable converters for a specific <see cref="RulesetInfo"/>.
         /// <para>
@@ -92,6 +101,9 @@ namespace osu.Game.Beatmaps
         /// <returns>The converted <see cref="IBeatmap"/>.</returns>
         /// <exception cref="BeatmapInvalidForRulesetException">If <see cref="Beatmap"/> could not be converted to <paramref name="ruleset"/>.</exception>
         IBeatmap GetPlayableBeatmap(IRulesetInfo ruleset, IReadOnlyList<Mod> mods = null);
+#pragma warning restore IDE0001 // Simplify Names
+#pragma warning restore IDE0001 // Simplify Names
+#pragma warning restore IDE0001 // Simplify Names
 
         /// <summary>
         /// Constructs a playable <see cref="IBeatmap"/> from <see cref="Beatmap"/> using the applicable converters for a specific <see cref="RulesetInfo"/>.

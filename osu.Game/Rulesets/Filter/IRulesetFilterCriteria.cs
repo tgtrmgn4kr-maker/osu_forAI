@@ -28,7 +28,10 @@ namespace osu.Game.Rulesets.Filter
         /// </returns>
         bool Matches(BeatmapInfo beatmapInfo, FilterCriteria criteria);
 
-        /// <summary>
+
+#pragma warning disable IDE0001 // Simplify Names
+#pragma warning disable IDE0001 // Simplify Names
+/// <summary>
         /// Attempts to parse a single custom keyword criterion, given by the user via the song select search box.
         /// The format of the criterion is:
         /// <code>
@@ -55,6 +58,8 @@ namespace osu.Game.Rulesets.Filter
         /// while ignored criteria are included in <see cref="FilterCriteria.SearchText"/>.
         /// </returns>
         bool TryParseCustomKeywordCriteria(string key, Operator op, string value);
+#pragma warning restore IDE0001 // Simplify Names
+#pragma warning restore IDE0001 // Simplify Names
 
         /// <summary>
         /// Whether to reapply the filter as a result of the given change in applied mods.

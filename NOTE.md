@@ -60,3 +60,29 @@ The Note is for the better developing experience
     - ln:64 記錄Hit的位置
   - \ Slider.cs
     - Slider的定義
+
+## Osu! 內的各物件
+- Hit
+  - osu.Game.Rulesets.Osu.Objects.Drawables.DrawableHitCircle
+    - 有 Great, Good, ok, meh, miss
+- Slider
+  - osu.Game.Rulesets.Osu.Objects.Drawables.DrawableSliderHead
+    - 和 HitCircle 一樣
+  - osu.Game.Rulesets.Osu.Objects.Drawables.DrawableSliderTail
+    - SliderTailHit
+  - osu.Game.Rulesets.Osu.Objects.Drawables.DrawableSlider
+    - IgnoreHit, IgnoreMiss
+  - osu.Game.Rulesets.Osu.Objects.Drawables.DrawableSliderRepeat
+    - LargeTickHit, LargeTickMiss
+  - osu.Game.Rulesets.Osu.Objects.Drawables.DrawableSliderTick
+    - LargeTickHit, LargeTickMiss
+- Spinner
+  - osu.Game.Rulesets.Osu.Objects.Drawables.DrawableSpinner
+    - 和 HitCircle 一樣
+  - osu.Game.Rulesets.Osu.Objects.Drawables.DrawableSpinnerTick
+    - SmallBonus
+  - osu.Game.Rulesets.Osu.Objects.Drawables.DrawableSpinnerBonusTick
+    - LargeBonus, IgnoreMiss
+
+## 查看 Debug Console 的篩選條件
+- [verbose], ![network], ![performance], !OsuScreenStack#559

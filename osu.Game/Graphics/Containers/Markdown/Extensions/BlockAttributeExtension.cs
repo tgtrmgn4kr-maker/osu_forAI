@@ -8,7 +8,10 @@ using Markdig.Syntax;
 
 namespace osu.Game.Graphics.Containers.Markdown.Extensions
 {
-    /// <summary>
+
+#pragma warning disable IDE0001 // Simplify Names
+#pragma warning disable IDE0001 // Simplify Names
+/// <summary>
     /// A variant of <see cref="Markdig.Extensions.GenericAttributes.GenericAttributesExtension"/>
     /// which only handles generic attributes in the current markdown <see cref="Block"/> and ignores inline generic attributes.
     /// </summary>
@@ -16,6 +19,8 @@ namespace osu.Game.Graphics.Containers.Markdown.Extensions
     /// For rationale, see implementation of <see cref="Setup(Markdig.MarkdownPipelineBuilder)"/>.
     /// </remarks>
     public class BlockAttributeExtension : IMarkdownExtension
+#pragma warning restore IDE0001 // Simplify Names
+#pragma warning restore IDE0001 // Simplify Names
     {
         private readonly GenericAttributesExtension genericAttributesExtension = new GenericAttributesExtension();
 

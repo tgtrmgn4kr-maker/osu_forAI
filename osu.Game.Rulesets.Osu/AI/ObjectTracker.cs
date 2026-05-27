@@ -41,10 +41,22 @@ namespace osu.Game.Rulesets.Osu.AI
                     Vector2 position = osuObject.StackedPosition;
                     double timeToHit = osuObject.StartTime;
                     var type = osuObject.GetType();
-                    Logger.Log($"Position: {position}");
-                    Logger.Log($"Time: {timeToHit}");
+                    /*
                     Logger.Log($"Type: {type}");
+                    Logger.Log($"{timeToHit} ms to hit");
+                    Logger.Log($"Position: {position}");
+                    */
+
                 }
+                if (obj.HitObject is Slider slider)
+                {
+                    var sliderHead = slider.HeadCircle;
+                    var type = slider.GetType();
+                    double timeToHit = slider.StartTime;
+                    Vector2 HeadPos = sliderHead.Position;
+
+                }
+
             }
         }
         public void Update()
@@ -65,12 +77,11 @@ namespace osu.Game.Rulesets.Osu.AI
                 if (slider.Ball is not null)
                 {
                     Vector2 ballPos = slider.Ball.Position;
-                    Logger.Log($"Position: {ballPos}");
+                    //Logger.Log($"Sliderball Position: {ballPos}");
                 }
-                else
                 {
-                    Vector2 headPos = slider.HeadCircle.HitObject.StackedPosition;
-                    Logger.Log(headPos.ToString());
+                    Vector2 headPos = slider.HeadCircle.Position;
+                    //Logger.Log("SliderHeadPos: ", headPos.ToString());
                 }
             }
         }

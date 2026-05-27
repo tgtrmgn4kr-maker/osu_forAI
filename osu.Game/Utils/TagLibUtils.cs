@@ -10,17 +10,25 @@ namespace osu.Game.Utils
 {
     public class TagLibUtils
     {
+
+#pragma warning disable IDE0001 // Simplify Names
+#pragma warning disable IDE0001 // Simplify Names
         /// <summary>
         /// Creates a <see cref="TagLib.File"/> with culture-invariant MIME type detection, based on stream data.
         /// </summary>
         /// <returns>The <see cref="TagLib.File"/> created.</returns>
         public static File GetTagLibFile(string filename, Stream stream)
+#pragma warning restore IDE0001 // Simplify Names
+#pragma warning restore IDE0001 // Simplify Names
         {
             var fileAbstraction = new StreamFileAbstraction(filename, stream);
 
             return File.Create(fileAbstraction, getMimeType(fileAbstraction.Name), ReadStyle.Average | ReadStyle.PictureLazy);
         }
 
+
+#pragma warning disable IDE0001 // Simplify Names
+#pragma warning disable IDE0001 // Simplify Names
         /// <summary>
         /// Creates a <see cref="TagLib.File"/> with culture-invariant MIME type detection based on a file on disk.
         /// </summary>
@@ -28,6 +36,8 @@ namespace osu.Game.Utils
         /// <returns>The <see cref="TagLib.File"/> created.</returns>
         public static File GetTagLibFile(string filePath) =>
             File.Create(filePath, getMimeType(filePath), ReadStyle.Average | ReadStyle.PictureLazy);
+#pragma warning restore IDE0001 // Simplify Names
+#pragma warning restore IDE0001 // Simplify Names
 
         // Manual MIME type resolution to avoid culture variance (ie. https://github.com/ppy/osu/issues/32962)
         private static string getMimeType(string fileName) => @"taglib/" + Path.GetExtension(fileName).TrimStart('.');

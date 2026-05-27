@@ -16,9 +16,12 @@ namespace osu.Game.Tests.Visual.Multiplayer
         /// </summary>
         TestMultiplayerClient MultiplayerClient { get; }
 
+
+#pragma warning disable IDE0001 // Simplify Names
         /// <summary>
         /// The cached <see cref="osu.Game.Online.Spectator.SpectatorClient"/>.
         /// </summary>
         TestSpectatorClient SpectatorClient { get; }
+#pragma warning restore IDE0001 // Simplify Names
     }
 }

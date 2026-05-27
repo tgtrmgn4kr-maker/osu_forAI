@@ -37,15 +37,20 @@ namespace osu.Game.Rulesets.Judgements
         /// </remarks>
         internal double? RawTime { get; set; }
 
+
+#pragma warning disable IDE0001 // Simplify Names
         /// <summary>
         /// The offset of <see cref="TimeAbsolute"/> from the end time of <see cref="HitObject"/>, clamped by <see cref="osu.Game.Rulesets.Objects.HitObject.MaximumJudgementOffset"/>.
         /// </summary>
         public double TimeOffset
+#pragma warning restore IDE0001 // Simplify Names
         {
             get => RawTime != null ? Math.Min(RawTime.Value - HitObject.GetEndTime(), HitObject.MaximumJudgementOffset) : 0;
             internal set => RawTime = HitObject.GetEndTime() + value;
         }
 
+
+#pragma warning disable IDE0001 // Simplify Names
         /// <summary>
         /// The absolute time at which this <see cref="JudgementResult"/> occurred, clamped by the end time of <see cref="HitObject"/> plus <see cref="osu.Game.Rulesets.Objects.HitObject.MaximumJudgementOffset"/>.
         /// </summary>
@@ -53,6 +58,7 @@ namespace osu.Game.Rulesets.Judgements
         /// The end time of <see cref="HitObject"/> is returned if this result is not populated yet.
         /// </remarks>
         public double TimeAbsolute => RawTime != null ? Math.Min(RawTime.Value, HitObject.GetEndTime() + HitObject.MaximumJudgementOffset) : HitObject.GetEndTime();
+#pragma warning restore IDE0001 // Simplify Names
 
         /// <summary>
         /// The gameplay rate at the time this <see cref="JudgementResult"/> occurred.

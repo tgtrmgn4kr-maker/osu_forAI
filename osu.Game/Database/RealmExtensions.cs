@@ -11,6 +11,8 @@ namespace osu.Game.Database
 {
     public static class RealmExtensions
     {
+
+#pragma warning disable IDE0001 // Simplify Names
         /// <summary>
         /// Performs a <see cref="Realm.Find{T}(System.Nullable{long})"/>.
         /// If a match was not found, a <see cref="Realm.Refresh"/> is performed before trying a second time.
@@ -24,6 +26,7 @@ namespace osu.Game.Database
         /// Can be <see langword="null"/> if the entity is still not found by <paramref name="id"/> even after a refresh.
         /// </returns>
         public static T? FindWithRefresh<T>(this Realm realm, Guid id) where T : IRealmObject
+#pragma warning restore IDE0001 // Simplify Names
         {
             var found = realm.Find<T>(id);
 

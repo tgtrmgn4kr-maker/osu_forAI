@@ -18,10 +18,13 @@ using Container = osu.Framework.Graphics.Containers.Container;
 
 namespace osu.Game.Rulesets.Mania.UI
 {
+
+#pragma warning disable IDE0001 // Simplify Names
     /// <summary>
     /// A <see cref="Framework.Graphics.Containers.Container"/> that has its contents partially hidden by an adjustable "cover". This is intended to be used in a playfield.
     /// </summary>
     public partial class PlayfieldCoveringWrapper : CompositeDrawable
+#pragma warning restore IDE0001 // Simplify Names
     {
         /// <summary>
         /// The relative area that should be completely covered. This does not include the fade.

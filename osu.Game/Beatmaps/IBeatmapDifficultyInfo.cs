@@ -136,7 +136,9 @@ namespace osu.Game.Beatmaps
                 : (difficultyValue - diff5) / (diff5 - diff0) * 5 + 5;
         }
 
-        /// <summary>
+
+#pragma warning disable IDE0001 // Simplify Names
+/// <summary>
         /// Inverse function to <see cref="DifficultyRange(double,osu.Game.Beatmaps.DifficultyRange)"/>.
         /// Maps a value returned by the function above back to the difficulty that produced it.
         /// </summary>
@@ -144,6 +146,7 @@ namespace osu.Game.Beatmaps
         /// <param name="range">Minimum of the resulting range which will be achieved by a difficulty value of 0.</param>
         /// <returns>Value to which the difficulty value maps in the specified range.</returns>
         static double InverseDifficultyRange(double difficultyValue, DifficultyRange range)
+#pragma warning restore IDE0001 // Simplify Names
             => InverseDifficultyRange(difficultyValue, range.Min, range.Mid, range.Max);
     }
 

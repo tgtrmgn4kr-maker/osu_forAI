@@ -647,11 +647,14 @@ namespace osu.Game.Tests.Visual.Gameplay
             }
         }
 
-        /// <summary>
+
+#pragma warning disable IDE0001 // Simplify Names
+/// <summary>
         /// Mutable dummy BatteryInfo class for <see cref="TestScenePlayerLoader.TestLowBatteryNotification"/>
         /// </summary>
         /// <inheritdoc/>
         private class LocalBatteryInfo : BatteryInfo
+#pragma warning restore IDE0001 // Simplify Names
         {
             private bool onBattery;
             private double? chargeLevel;

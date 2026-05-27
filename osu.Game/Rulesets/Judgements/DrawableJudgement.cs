@@ -16,10 +16,13 @@ using osuTK;
 
 namespace osu.Game.Rulesets.Judgements
 {
+
+#pragma warning disable IDE0001 // Simplify Names
     /// <summary>
     /// A drawable object which visualises the hit result of a <see cref="Judgements.Judgement"/>.
     /// </summary>
     public partial class DrawableJudgement : PoolableDrawable
+#pragma warning restore IDE0001 // Simplify Names
     {
         private const float judgement_size = 128;
 

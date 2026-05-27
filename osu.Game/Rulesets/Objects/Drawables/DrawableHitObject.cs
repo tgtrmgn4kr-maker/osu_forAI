@@ -368,19 +368,25 @@ namespace osu.Game.Rulesets.Objects.Drawables
             clearExistingStateTransforms();
         }
 
+
+#pragma warning disable IDE0001 // Simplify Names
         /// <summary>
         /// Invoked for this <see cref="DrawableHitObject"/> to take on any values from a newly-applied <see cref="HitObject"/>.
         /// This is also fired after any changes which occurred via an <see cref="osu.Game.Rulesets.Objects.HitObject.ApplyDefaults"/> call.
         /// </summary>
         protected virtual void OnApply()
+#pragma warning restore IDE0001 // Simplify Names
         {
         }
 
+
+#pragma warning disable IDE0001 // Simplify Names
         /// <summary>
         /// Invoked for this <see cref="DrawableHitObject"/> to revert any values previously taken on from the currently-applied <see cref="HitObject"/>.
         /// This is also fired after any changes which occurred via an <see cref="osu.Game.Rulesets.Objects.HitObject.ApplyDefaults"/> call.
         /// </summary>
         protected virtual void OnFree()
+#pragma warning restore IDE0001 // Simplify Names
         {
         }
 

@@ -272,12 +272,15 @@ namespace osu.Game.Tests.Visual.Navigation
             AddUntilStep("selected beatmap is still osu! ruleset", () => Game.Beatmap.Value.BeatmapInfo, () => Is.EqualTo(selectedBeatmap));
         }
 
-        /// <summary>
+
+#pragma warning disable IDE0001 // Simplify Names
+/// <summary>
         /// Note: This test was written to demonstrate the failure described at https://github.com/ppy/osu/issues/35023,
         /// but because the failure scenario there entailed a race condition, it was possible for the test to pass regardless
         /// unless <see cref="osu.Game.Screens.Select.SongSelect.SELECTION_DEBOUNCE"/> was increased.
         /// </summary>
         [Test]
+#pragma warning restore IDE0001 // Simplify Names
         public void TestPresentFromResults()
         {
             BeatmapSetInfo beatmapToPresent = null!;

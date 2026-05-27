@@ -11,13 +11,18 @@ using osu.Game.Skinning;
 
 namespace osu.Game.Beatmaps
 {
-    /// <summary>
+
+#pragma warning disable IDE0001 // Simplify Names
+#pragma warning disable IDE0001 // Simplify Names
+/// <summary>
     /// A <see cref="WorkingBeatmap"/> which can be constructed directly from an .osu file (via <see cref="FlatWorkingBeatmap(string, int?)"/>)
     /// or an <see cref="IBeatmap"/> instance (via <see cref="FlatWorkingBeatmap(IBeatmap)"/>,
     /// providing an implementation for
     /// <see cref="WorkingBeatmap.GetPlayableBeatmap(osu.Game.Rulesets.IRulesetInfo,System.Collections.Generic.IReadOnlyList{osu.Game.Rulesets.Mods.Mod})"/>.
     /// </summary>
     public class FlatWorkingBeatmap : WorkingBeatmap
+#pragma warning restore IDE0001 // Simplify Names
+#pragma warning restore IDE0001 // Simplify Names
     {
         private readonly IBeatmap beatmap;
 

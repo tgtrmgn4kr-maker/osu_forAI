@@ -5,6 +5,8 @@ using System.Linq;
 
 namespace osu.Game.Beatmaps.Formats
 {
+
+#pragma warning disable IDE0001 // Simplify Names
     /// <summary>
     /// A <see cref="LegacyBeatmapDecoder"/> built for difficulty calculation of legacy <see cref="Beatmap"/>s
     /// <remarks>
@@ -13,6 +15,7 @@ namespace osu.Game.Beatmaps.Formats
     /// </remarks>
     /// </summary>
     public class LegacyDifficultyCalculatorBeatmapDecoder : LegacyBeatmapDecoder
+#pragma warning restore IDE0001 // Simplify Names
     {
         public LegacyDifficultyCalculatorBeatmapDecoder(int version = LATEST_VERSION)
             : base(version)

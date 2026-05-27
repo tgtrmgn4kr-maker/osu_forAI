@@ -208,13 +208,16 @@ namespace osu.Game.Screens.Edit.Compose.Components.Timeline
             /// </summary>
             private readonly float scrollOffset;
 
-            /// <summary>
+
+#pragma warning disable IDE0001 // Simplify Names
+/// <summary>
             /// Transforms <see cref="ZoomableScrollContainer.CurrentZoom"/> to a new value.
             /// </summary>
             /// <param name="focusPoint">The focus point in absolute coordinates local to the content.</param>
             /// <param name="contentSize">The size of the content.</param>
             /// <param name="scrollOffset">The scroll offset at the start of the transform.</param>
             public TransformZoom(float focusPoint, float contentSize, float scrollOffset)
+#pragma warning restore IDE0001 // Simplify Names
             {
                 this.focusPoint = focusPoint;
                 this.contentSize = contentSize;

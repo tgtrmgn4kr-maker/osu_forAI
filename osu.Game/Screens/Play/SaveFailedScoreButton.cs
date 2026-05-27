@@ -65,7 +65,9 @@ namespace osu.Game.Screens.Play
                             {
                                 Task.Run(importFailedScore).ContinueWith(t =>
                                 {
+#pragma warning disable IDE0001 // Simplify Names
                                     importedScore = realm.Run<Live<ScoreInfo>?>(r => r.Find<ScoreInfo>(t.GetResultSafely().ID)?.ToLive(realm));
+#pragma warning restore IDE0001 // Simplify Names
                                     Schedule(() => state.Value = importedScore != null ? DownloadState.LocallyAvailable : DownloadState.NotDownloaded);
                                 }).FireAndForget();
                             }

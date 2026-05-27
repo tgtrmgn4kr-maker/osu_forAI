@@ -23,11 +23,14 @@ using osuTK.Input;
 
 namespace osu.Game.Screens.Edit.Compose.Components
 {
-    /// <summary>
+
+#pragma warning disable IDE0001 // Simplify Names
+/// <summary>
     /// A container which provides a "blueprint" display of items.
     /// Includes selection and manipulation support via a <see cref="Components.SelectionHandler{T}"/>.
     /// </summary>
     public abstract partial class BlueprintContainer<T> : CompositeDrawable, IKeyBindingHandler<PlatformAction>, IKeyBindingHandler<GlobalAction>
+#pragma warning restore IDE0001 // Simplify Names
         where T : class
     {
         protected DragBox DragBox { get; private set; }
@@ -99,10 +102,13 @@ namespace osu.Game.Screens.Edit.Compose.Components
 
         protected virtual SelectionBlueprintContainer CreateSelectionBlueprintContainer() => new SelectionBlueprintContainer { RelativeSizeAxes = Axes.Both };
 
-        /// <summary>
+
+#pragma warning disable IDE0001 // Simplify Names
+/// <summary>
         /// Creates a <see cref="Components.SelectionHandler{T}"/> which outlines items and handles movement of selections.
         /// </summary>
         protected abstract SelectionHandler<T> CreateSelectionHandler();
+#pragma warning restore IDE0001 // Simplify Names
 
         /// <summary>
         /// Creates a <see cref="SelectionBlueprint{T}"/> for a specific item.

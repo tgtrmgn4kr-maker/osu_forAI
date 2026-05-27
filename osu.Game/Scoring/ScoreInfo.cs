@@ -31,6 +31,8 @@ namespace osu.Game.Scoring
         [PrimaryKey]
         public Guid ID { get; set; }
 
+
+#pragma warning disable IDE0001 // Simplify Names
         /// <summary>
         /// The <see cref="BeatmapInfo"/> this score was made against.
         /// </summary>
@@ -45,6 +47,7 @@ namespace osu.Game.Scoring
         /// </para>
         /// </remarks>
         public BeatmapInfo? BeatmapInfo { get; set; }
+#pragma warning restore IDE0001 // Simplify Names
 
         /// <summary>
         /// The version of the client this score was set using.
@@ -52,10 +55,13 @@ namespace osu.Game.Scoring
         /// </summary>
         public string ClientVersion { get; set; } = string.Empty;
 
+
+#pragma warning disable IDE0001 // Simplify Names
         /// <summary>
         /// The <see cref="osu.Game.Beatmaps.BeatmapInfo.Hash"/> at the point in time when the score was set.
         /// </summary>
         [Indexed]
+#pragma warning restore IDE0001 // Simplify Names
         public string BeatmapHash { get; set; } = string.Empty;
 
         public RulesetInfo Ruleset { get; set; } = null!;

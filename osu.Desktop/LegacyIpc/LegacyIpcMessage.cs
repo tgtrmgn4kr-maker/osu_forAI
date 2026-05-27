@@ -6,7 +6,11 @@ using Newtonsoft.Json.Linq;
 
 namespace osu.Desktop.LegacyIpc
 {
-    /// <summary>
+
+#pragma warning disable IDE0001 // Simplify Names
+#pragma warning disable IDE0001 // Simplify Names
+#pragma warning disable IDE0001 // Simplify Names
+/// <summary>
     /// An <see cref="IpcMessage"/> that can be used to communicate to and from legacy clients.
     /// <para>
     /// In order to deserialise types at either end, types must be serialised as their <see cref="System.Type.AssemblyQualifiedName"/>,
@@ -25,6 +29,9 @@ namespace osu.Desktop.LegacyIpc
     /// Synchronise any changes with osu-stable.
     /// </remarks>
     public class LegacyIpcMessage : IpcMessage
+#pragma warning restore IDE0001 // Simplify Names
+#pragma warning restore IDE0001 // Simplify Names
+#pragma warning restore IDE0001 // Simplify Names
     {
         public LegacyIpcMessage()
         {

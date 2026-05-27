@@ -129,6 +129,8 @@ namespace osu.Game.Rulesets.Mania.Objects
 
         public IList<HitSampleInfo> GetNodeSamples(int nodeIndex) => nodeIndex < NodeSamples?.Count ? NodeSamples[nodeIndex] : Samples;
 
+
+#pragma warning disable IDE0001 // Simplify Names
         /// <summary>
         /// Create the default note samples for a hold note, based off their main sample.
         /// </summary>
@@ -142,5 +144,6 @@ namespace osu.Game.Rulesets.Mania.Objects
             obj.Samples,
             new List<HitSampleInfo>(),
         };
+#pragma warning restore IDE0001 // Simplify Names
     }
 }
