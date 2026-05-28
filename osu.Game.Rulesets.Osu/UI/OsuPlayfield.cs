@@ -94,6 +94,22 @@ namespace osu.Game.Rulesets.Osu.UI
         public partial class AIPlayfield : OsuPlayfield
         {
             public IEnumerable<DrawableHitObject> AliveObjects => HitObjectContainer.AliveObjects;
+
+            public event Action<DrawableHitObject>? OnAIPlayFieldNewDrawableHitObject;
+            private readonly HashSet<DrawableHitObject> tracked = new();
+
+
+            protected override void Update()
+            {
+                base.Update();
+
+                foreach (var obj in AliveObjects)
+                {
+                    if (tracked.Contains(obj)) continue;
+                    tracked.Add(obj);
+                    OnAIPlayFieldNewDrawableHitObject?.Invoke(obj);
+                }
+            }
         }
 
         private IHitPolicy hitPolicy;

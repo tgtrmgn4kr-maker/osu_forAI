@@ -23,6 +23,7 @@ using osu.Game.Screens.Play;
 using osuTK;
 using osu.Game.Rulesets.Osu.AI;
 
+
 namespace osu.Game.Rulesets.Osu.UI
 {
     public partial class DrawableOsuRuleset : DrawableRuleset<OsuHitObject>
@@ -45,7 +46,6 @@ namespace osu.Game.Rulesets.Osu.UI
         public DrawableOsuRuleset(Ruleset ruleset, IBeatmap beatmap, IReadOnlyList<Mod>? mods = null)
             : base(ruleset, beatmap, mods)
         {
-
         }
 
         [BackgroundDependencyLoader]

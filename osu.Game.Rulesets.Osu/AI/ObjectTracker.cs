@@ -35,17 +35,12 @@ namespace osu.Game.Rulesets.Osu.AI
 
             foreach (DrawableHitObject obj in nextObjects)
             {
-                if (obj.HitObject is OsuHitObject @object)
+                if (obj.HitObject is SliderHeadCircle sliderHeadCircle)
                 {
-                    var osuObject = @object;
+                    var osuObject = sliderHeadCircle;
                     Vector2 position = osuObject.StackedPosition;
                     double timeToHit = osuObject.StartTime;
                     var type = osuObject.GetType();
-                    /*
-                    Logger.Log($"Type: {type}");
-                    Logger.Log($"{timeToHit} ms to hit");
-                    Logger.Log($"Position: {position}");
-                    */
 
                 }
                 if (obj.HitObject is Slider slider)
@@ -54,9 +49,7 @@ namespace osu.Game.Rulesets.Osu.AI
                     var type = slider.GetType();
                     double timeToHit = slider.StartTime;
                     Vector2 HeadPos = sliderHead.Position;
-
                 }
-
             }
         }
         public void Update()
@@ -79,10 +72,9 @@ namespace osu.Game.Rulesets.Osu.AI
                     Vector2 ballPos = slider.Ball.Position;
                     //Logger.Log($"Sliderball Position: {ballPos}");
                 }
-                {
-                    Vector2 headPos = slider.HeadCircle.Position;
-                    //Logger.Log("SliderHeadPos: ", headPos.ToString());
-                }
+
+                Vector2 headPos = slider.HeadCircle.Position;
+                //Logger.Log("SliderHeadPos: ", headPos.ToString());
             }
         }
     }

@@ -64,24 +64,33 @@ The Note is for the better developing experience
 ## Osu! 內的各物件
 - Hit
   - osu.Game.Rulesets.Osu.Objects.Drawables.DrawableHitCircle
+    - osu.Game.Rulesets.Osu.Objects.HitCircle
     - 有 Great, Good, ok, meh, miss
 - Slider
   - osu.Game.Rulesets.Osu.Objects.Drawables.DrawableSliderHead
+    - osu.Game.Rulesets.Osu.Objects.SliderHeadCircle
     - 和 HitCircle 一樣
   - osu.Game.Rulesets.Osu.Objects.Drawables.DrawableSliderTail
+    - osu.Game.Rulesets.Osu.Objects.SliderTailCircle
     - SliderTailHit
   - osu.Game.Rulesets.Osu.Objects.Drawables.DrawableSlider
+    - osu.Game.Rulesets.Osu.Objects.Slider
     - IgnoreHit, IgnoreMiss
   - osu.Game.Rulesets.Osu.Objects.Drawables.DrawableSliderRepeat
+    - osu.Game.Rulesets.Osu.Objects.SliderRepeat
     - LargeTickHit, LargeTickMiss
   - osu.Game.Rulesets.Osu.Objects.Drawables.DrawableSliderTick
+    - osu.Game.Rulesets.Osu.Objects.SliderTick
     - LargeTickHit, LargeTickMiss
 - Spinner
   - osu.Game.Rulesets.Osu.Objects.Drawables.DrawableSpinner
+    - osu.Game.Rulesets.Osu.Objects.Spinner
     - 和 HitCircle 一樣
   - osu.Game.Rulesets.Osu.Objects.Drawables.DrawableSpinnerTick
+    - osu.Game.Rulesets.Osu.Objects.SpinnerTick
     - SmallBonus
   - osu.Game.Rulesets.Osu.Objects.Drawables.DrawableSpinnerBonusTick
+    - osu.Game.Rulesets.Osu.Objects.SpinnerBonusTick
     - LargeBonus, IgnoreMiss
 
 ## 查看 Debug Console 的篩選條件

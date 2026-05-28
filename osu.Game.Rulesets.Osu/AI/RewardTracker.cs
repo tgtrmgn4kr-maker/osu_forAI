@@ -13,7 +13,7 @@ namespace osu.Game.Rulesets.Osu.AI
 {
     public class RewardTracker
     {
-        public HashSet<DrawableHitObject> SubscribedObjects;
+        internal HashSet<DrawableHitObject> SubscribedObjects;
 
         public struct ScoreContainer
         {
@@ -23,17 +23,14 @@ namespace osu.Game.Rulesets.Osu.AI
         public RewardTracker(OsuPlayfield.AIPlayfield playfield)
         {
             this.playfield = playfield;
-            playfield.NewResult += onNewResult;
             SubscribedObjects = new();
+            playfield.OnAIPlayFieldNewDrawableHitObject += collectObjects;
         }
         private OsuPlayfield.AIPlayfield? playfield;
 
 
-        private void onNewResult(DrawableHitObject obj, JudgementResult result)
-        {
-            CollectObjects();
-        }
-        public void CollectObjects()
+
+        private void collectObjects(DrawableHitObject _)
         {
             var nextObjects = playfield?.HitObjectContainer.Get8AliveObjects();
 
@@ -56,6 +53,7 @@ namespace osu.Game.Rulesets.Osu.AI
                 Result = result
             };
             Logger.Log($"Type: {scoreContainer.HitObject.GetType()}");
+            Logger.Log($"SmallType: {scoreContainer.HitObject.HitObject.GetType()}");
             Logger.Log($"TimeOffset: {scoreContainer.Result.TimeOffset}");
             Logger.Log($"Judgement: {scoreContainer.Result.Type}");
         }
