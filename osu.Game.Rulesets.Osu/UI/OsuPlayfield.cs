@@ -24,6 +24,7 @@ using osu.Game.Rulesets.Osu.UI.Cursor;
 using osu.Game.Rulesets.Scoring;
 using osu.Game.Rulesets.UI;
 using osuTK;
+using osu.Framework.Logging;
 
 namespace osu.Game.Rulesets.Osu.UI
 {
@@ -95,9 +96,11 @@ namespace osu.Game.Rulesets.Osu.UI
         {
             public IEnumerable<DrawableHitObject> AliveObjects => HitObjectContainer.AliveObjects;
 
+            /// <summary>
+            /// Invoked if a new AliveObject is found
+            /// </summary>
             public event Action<DrawableHitObject>? OnAIPlayFieldNewDrawableHitObject;
-            private readonly HashSet<DrawableHitObject> tracked = new();
-
+            private readonly HashSet<HitObject> tracked = new();
 
             protected override void Update()
             {
@@ -105,8 +108,11 @@ namespace osu.Game.Rulesets.Osu.UI
 
                 foreach (var obj in AliveObjects)
                 {
-                    if (tracked.Contains(obj)) continue;
-                    tracked.Add(obj);
+                    if (!tracked.Add(obj.HitObject))
+                        continue;
+
+                    Logger.Log($"New object: {obj.HitObject.StartTime}");
+
                     OnAIPlayFieldNewDrawableHitObject?.Invoke(obj);
                 }
             }

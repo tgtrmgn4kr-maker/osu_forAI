@@ -9,6 +9,7 @@ using osu.Framework.Logging;
 
 
 
+
 namespace osu.Game.Rulesets.Osu.AI
 {
     public class RewardTracker
@@ -20,30 +21,26 @@ namespace osu.Game.Rulesets.Osu.AI
             public DrawableHitObject? HitObject;
             public JudgementResult? Result;
         }
-        public RewardTracker(OsuPlayfield.AIPlayfield playfield)
+        public struct RewardEvent
         {
-            this.playfield = playfield;
-            SubscribedObjects = new();
-            playfield.OnAIPlayFieldNewDrawableHitObject += collectObjects;
+            public int ObjectType;
+            public int ResultType;
+            public float TimeOffset;
         }
-        private OsuPlayfield.AIPlayfield? playfield;
-
-
-
-        private void collectObjects(DrawableHitObject _)
+        public RewardTracker(OsuPlayfield.AIPlayfield playfield, SharedTrackerState state)
         {
-            var nextObjects = playfield?.HitObjectContainer.Get8AliveObjects();
+            SubscribedObjects = new();
+            playfield.OnAIPlayFieldNewDrawableHitObject += CollectObjects;
+            this.state = state;
+        }
+        private readonly SharedTrackerState state;
 
-            if (nextObjects is null) return;
 
-            foreach (var obj in nextObjects)
-            {
-                if (SubscribedObjects.Contains(obj)) continue;
-
-                obj.OnNewResult += ScoreGetter;
-                SubscribedObjects.Add(obj);
-            }
-
+        internal void CollectObjects(DrawableHitObject obj)
+        {
+            if (state.SubscribedObjects.Contains(obj.HitObject)) return;
+            obj.OnNewResult += ScoreGetter;
+            state.SubscribedObjects.Add(obj.HitObject);
         }
         public void ScoreGetter(DrawableHitObject obj, JudgementResult result)
         {
@@ -51,11 +48,12 @@ namespace osu.Game.Rulesets.Osu.AI
             {
                 HitObject = obj,
                 Result = result
-            };
+            };/*
             Logger.Log($"Type: {scoreContainer.HitObject.GetType()}");
             Logger.Log($"SmallType: {scoreContainer.HitObject.HitObject.GetType()}");
             Logger.Log($"TimeOffset: {scoreContainer.Result.TimeOffset}");
-            Logger.Log($"Judgement: {scoreContainer.Result.Type}");
+            Logger.Log($"Judgement: {scoreContainer.Result.Type}");*/
+            state.SubscribedObjects.Remove(obj.HitObject);
         }
     }
 

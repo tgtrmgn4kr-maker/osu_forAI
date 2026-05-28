@@ -38,6 +38,7 @@ namespace osu.Game.Rulesets.Osu.UI
 
         private ObjectTracker? objectTracker = null;
         private RewardTracker? rewardTracker = null;
+        private SharedTrackerState? sharedState = null;
 
 
 
@@ -51,8 +52,9 @@ namespace osu.Game.Rulesets.Osu.UI
         [BackgroundDependencyLoader]
         private void load(ReplayPlayer? replayPlayer)
         {
-            objectTracker = new ObjectTracker(aIPlayfield);
-            rewardTracker = new RewardTracker(aIPlayfield);
+            sharedState = new();
+            objectTracker = new ObjectTracker(aIPlayfield, sharedState);
+            rewardTracker = new RewardTracker(aIPlayfield, sharedState);
 
             if (replayPlayer != null)
             {

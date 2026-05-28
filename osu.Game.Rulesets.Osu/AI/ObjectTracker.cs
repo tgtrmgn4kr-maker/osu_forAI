@@ -1,13 +1,12 @@
 // Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
-using osu.Game.Rulesets.Judgements;
+
 using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Osu.UI;
-using osu.Game.Rulesets.Osu.Objects;
+
 using osu.Framework.Logging;
 using osu.Game.Rulesets.Osu.Objects.Drawables;
-using osuTK;
 
 
 
@@ -15,67 +14,74 @@ namespace osu.Game.Rulesets.Osu.AI
 {
     public class ObjectTracker
     {
-        public ObjectTracker(OsuPlayfield.AIPlayfield playfield)
+        public ObjectTracker(OsuPlayfield.AIPlayfield playfield, SharedTrackerState state)
         {
             this.playfield = playfield;
-            playfield.NewResult += onNewResult;
+            playfield.OnAIPlayFieldNewDrawableHitObject += getNext8Objects;
+            this.state = state;
         }
 
+        public struct FrameObservation
+        {
+            public float CursorX;
+            public float CursorY;
+
+        }
+
+        private readonly SharedTrackerState state;
         private OsuPlayfield.AIPlayfield? playfield;
 
-        private void onNewResult(DrawableHitObject obj, JudgementResult result)
-        {
-            getNext8Objects();
-        }
-        private void getNext8Objects()
+        private void getNext8Objects(DrawableHitObject _)
         {
             var nextObjects = playfield?.HitObjectContainer.Get8AliveObjects();
 
             if (nextObjects is null) return;
 
             foreach (DrawableHitObject obj in nextObjects)
-            {
-                if (obj.HitObject is SliderHeadCircle sliderHeadCircle)
+            {/*
+                switch (obj)
                 {
-                    var osuObject = sliderHeadCircle;
-                    Vector2 position = osuObject.StackedPosition;
-                    double timeToHit = osuObject.StartTime;
-                    var type = osuObject.GetType();
+                    case DrawableHitCircle hitCircle:
+                        Logger.Log(
+                            $"Circle Pos: {hitCircle.HitObject.StackedPosition}"
+                        );
+                        break;
 
-                }
-                if (obj.HitObject is Slider slider)
-                {
-                    var sliderHead = slider.HeadCircle;
-                    var type = slider.GetType();
-                    double timeToHit = slider.StartTime;
-                    Vector2 HeadPos = sliderHead.Position;
-                }
+                    case DrawableSlider slider:
+
+                        Logger.Log(
+                            $"Slider Pos: {slider.HitObject.StackedPosition}"
+                        );
+
+                        Logger.Log(
+                            $"Slider StartTime: {slider.HitObject.StartTime}"
+                        );
+
+                        break;
+                }*/
+                Logger.Log($"Type: {obj.GetType()}");
+                Logger.Log($"Type: {obj.HitObject.GetType()}");
             }
         }
         public void Update()
         {
-            getObjectTiming();
-            getSliderBallPosition();
+            //trackSliderBall();
         }
 
-        private void getObjectTiming()
+        private void trackSliderBall()
         {
-        }
-        private void getSliderBallPosition()
-        {
-            var obj = playfield?.HitObjectContainer.GetNextSlider();
-            if (obj is null) return;
-            if (obj is DrawableSlider slider)
+            var hitObject = playfield?.HitObjectContainer.GetNextSlider();
+            if (hitObject is DrawableSlider slider)
             {
-                if (slider.Ball is not null)
+                if (slider.Ball != null)
                 {
-                    Vector2 ballPos = slider.Ball.Position;
-                    //Logger.Log($"Sliderball Position: {ballPos}");
+                    //Logger.Log($"Slider ball position: {slider.Ball.Position}");
                 }
-
-                Vector2 headPos = slider.HeadCircle.Position;
-                //Logger.Log("SliderHeadPos: ", headPos.ToString());
             }
+
         }
+
+
+
     }
 }
