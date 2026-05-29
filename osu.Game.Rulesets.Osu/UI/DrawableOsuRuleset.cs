@@ -71,6 +71,7 @@ namespace osu.Game.Rulesets.Osu.UI
             }
         }
 
+
         public override DrawableHitObject<OsuHitObject>? CreateDrawableRepresentation(OsuHitObject h) => null;
 
         public override bool ReceivePositionalInputAt(Vector2 screenSpacePos) => true; // always show the gameplay cursor

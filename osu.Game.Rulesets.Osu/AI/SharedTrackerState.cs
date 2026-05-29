@@ -13,6 +13,7 @@ namespace osu.Game.Rulesets.Osu.AI
         /// A HashSet to store the Alive Objects until it has been judged.
         /// </summary>
         public HashSet<HitObject> SubscribedObjects { get; } = new();
+
     }
 
 }

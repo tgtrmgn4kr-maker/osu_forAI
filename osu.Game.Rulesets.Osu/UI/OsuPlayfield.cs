@@ -94,6 +94,7 @@ namespace osu.Game.Rulesets.Osu.UI
 
         public partial class AIPlayfield : OsuPlayfield
         {
+
             public IEnumerable<DrawableHitObject> AliveObjects => HitObjectContainer.AliveObjects;
 
             /// <summary>
@@ -102,9 +103,16 @@ namespace osu.Game.Rulesets.Osu.UI
             public event Action<DrawableHitObject>? OnAIPlayFieldNewDrawableHitObject;
             private readonly HashSet<HitObject> tracked = new();
 
+            public double CurrentTime;
+            public Vector2 CursorPosition;
+
             protected override void Update()
             {
                 base.Update();
+
+                CurrentTime = Clock.CurrentTime;
+
+                CursorPosition = ToLocalSpace(GetContainingInputManager().CurrentState.Mouse.Position);
 
                 foreach (var obj in AliveObjects)
                 {
