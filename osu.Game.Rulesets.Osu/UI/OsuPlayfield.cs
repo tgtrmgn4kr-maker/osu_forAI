@@ -106,9 +106,12 @@ namespace osu.Game.Rulesets.Osu.UI
             public double CurrentTime;
             public Vector2 CursorPosition;
 
+            private int count = 0;
             protected override void Update()
             {
                 base.Update();
+
+                count++;
 
                 CurrentTime = Clock.CurrentTime;
 

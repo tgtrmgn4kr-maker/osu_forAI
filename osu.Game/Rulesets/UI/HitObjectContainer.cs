@@ -26,6 +26,7 @@ namespace osu.Game.Rulesets.UI
         public IEnumerable<DrawableHitObject> Get10AliveObjects() => AliveObjects.Take(10);
 
         public DrawableHitObject GetNextSlider() => AliveObjects.FirstOrDefault();
+        public DrawableHitObject GetNextSpinner() => AliveObjects.FirstOrDefault();
 
 
         /// <summary>
