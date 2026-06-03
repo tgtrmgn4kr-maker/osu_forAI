@@ -42,7 +42,7 @@ namespace osu.Game.Input.Handlers
 
             public void Apply(InputState state, IInputStateChangeHandler handler)
             {
-                if (!(state is RulesetInputManagerInputState<T> inputState))
+                if (state is not RulesetInputManagerInputState<T> inputState)
                     throw new InvalidOperationException($"{nameof(ReplayState<T>)} should only be applied to a {nameof(RulesetInputManagerInputState<T>)}");
 
                 T[] released = Array.Empty<T>();

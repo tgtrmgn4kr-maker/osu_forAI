@@ -111,6 +111,9 @@ namespace osu.Game.Rulesets.Osu
         [Description("Right button")]
         RightButton,
 
+        /// <summary>
+        /// Left mark on the path of the cursor
+        /// </summary>
         [Description("Smoke")]
         Smoke,
     }

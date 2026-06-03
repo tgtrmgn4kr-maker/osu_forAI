@@ -60,6 +60,9 @@ The Note is for the better developing experience
     - ln:64 記錄Hit的位置
   - \ Slider.cs
     - Slider的定義
+- \ Replays
+  - \ OsuReplayFrame.cs
+    - 一個OsuReplayFrame
 
 ## Osu! 內的各物件
 - Hit

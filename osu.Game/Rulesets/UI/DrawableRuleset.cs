@@ -306,7 +306,7 @@ namespace osu.Game.Rulesets.UI
 
         public override void SetReplayScore(Score replayScore)
         {
-            if (!(KeyBindingInputManager is IHasReplayHandler replayInputManager))
+            if (KeyBindingInputManager is not IHasReplayHandler replayInputManager)
                 throw new InvalidOperationException($"A {nameof(KeyBindingInputManager)} which supports replay loading is not available");
 
             var handler = (ReplayScore = replayScore) != null ? CreateReplayInputHandler(replayScore.Replay) : null;
