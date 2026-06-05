@@ -6,6 +6,10 @@ The Note is for the better developing experience
 - \ IAnimationTimeReference.cs
   - AnimationStartTime The time which animations should be started from
 
+## Osu.Game \ Rulesets \ UI
+- DrawableRuleset.cs
+  - 插入AI input
+
 ## Osu.Game \ Rulesets \ objects \ scoring
 - \ HitResult.cs
   - HitResult的定義
@@ -43,6 +47,10 @@ The Note is for the better developing experience
 ## Osu.Game \ Graphics \ Containers
 - \ ParallaxContainer.cs
   - ln:69 Update 每一幀的Mouse Position
+
+## Osu.Game \ Screens \ Select
+- \ SoloSongSelect.cs
+  - ln:97 OnStart 在遊戲開始時 Load Player
 
 ## Osu.Game.Rulesets.Osu
 - \ Drawables

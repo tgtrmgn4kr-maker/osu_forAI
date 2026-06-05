@@ -95,7 +95,7 @@ namespace osu.Game
         public const double SFX_STEREO_STRENGTH = 0.6;
 
         /// <summary>
-        /// Length of debounce (in milliseconds) for commonly occuring sample playbacks that could stack.
+        /// Length of debounce (in milliseconds) for commonly occurring sample playbacks that could stack.
         /// </summary>
         public const int SAMPLE_DEBOUNCE_TIME = 20;
 
@@ -644,7 +644,7 @@ namespace osu.Game
         /// <summary>
         /// Creates an input settings subsection for an <see cref="InputHandler"/>.
         /// </summary>
-        /// <remarks>Should be overriden per-platform to provide settings for platform-specific handlers.</remarks>
+        /// <remarks>Should be overridden per-platform to provide settings for platform-specific handlers.</remarks>
         public virtual SettingsSubsection CreateSettingsSubsectionFor(InputHandler handler)
         {
             // One would think that this could be moved to the `OsuGameDesktop` class, but doing so means that

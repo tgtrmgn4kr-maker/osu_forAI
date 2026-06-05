@@ -223,9 +223,12 @@ namespace osu.Game.Screens.Play
             DrawableRuleset.SetRecordTarget(Score);
         }
 
+        #region BackgroundDependency
+
         [BackgroundDependencyLoader(true)]
         private void load(OsuConfigManager config, OsuGameBase game, CancellationToken cancellationToken)
         {
+            // Game Mods
             var gameplayMods = Mods.Value.Select(m => m.DeepClone()).ToArray();
 
             if (gameplayMods.Any(m => m is UnknownMod))
@@ -248,6 +251,7 @@ namespace osu.Game.Screens.Play
                 return;
             }
 
+            // Create game ruleset
             if (game != null)
                 gameActive.BindTo(game.IsActive);
 
@@ -276,7 +280,7 @@ namespace osu.Game.Screens.Play
 
             AddInternal(screenSuspension = new ScreenSuspensionHandler(GameplayClockContainer));
 
-            Score = CreateScore(playableBeatmap);
+            Score = CreateScore(playableBeatmap); // A new Score
 
             // ensure the score is in a consistent state with the current player.
             Score.ScoreInfo.BeatmapInfo = Beatmap.Value.BeatmapInfo;
@@ -432,6 +436,7 @@ namespace osu.Game.Screens.Play
             IsBreakTime.BindTo(breakTracker.IsBreakTime);
             IsBreakTime.BindValueChanged(onBreakTimeChanged, true);
         }
+        #endregion
 
         protected virtual GameplayClockContainer CreateGameplayClockContainer(WorkingBeatmap beatmap, double gameplayStart) => new MasterGameplayClockContainer(beatmap, gameplayStart);
 
@@ -590,11 +595,7 @@ namespace osu.Game.Screens.Play
                     throw new InvalidOperationException("Beatmap was not loaded");
 
                 var rulesetInfo = Ruleset.Value ?? Beatmap.Value.BeatmapInfo.Ruleset;
-                ruleset = rulesetInfo.CreateInstance();
-
-                if (ruleset == null)
-                    throw new RulesetLoadException("Instantiation failure");
-
+                ruleset = rulesetInfo.CreateInstance() ?? throw new RulesetLoadException("Instantiation failure");
                 try
                 {
                     playable = Beatmap.Value.GetPlayableBeatmap(ruleset.RulesetInfo, gameplayMods, cancellationToken);
