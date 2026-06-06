@@ -6,6 +6,10 @@ The Note is for the better developing experience
 - \ IAnimationTimeReference.cs
   - AnimationStartTime The time which animations should be started from
 
+## Osu.Game \ Input \ Handlers
+- \ AIInputHandler.cs
+  - 處理 AI input
+
 ## Osu.Game \ Rulesets \ UI
 - DrawableRuleset.cs
   - 插入AI input

@@ -1316,6 +1316,7 @@ namespace osu.Game
 
         /// <summary>
         /// Apply any migrations to configuration.
+        /// Not used
         /// </summary>
         /// <remarks>
         /// For database migrations, see <see cref="RealmAccess.applyMigrationsForVersion"/>.

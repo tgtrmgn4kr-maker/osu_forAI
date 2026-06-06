@@ -281,7 +281,7 @@ namespace osu.Game.Rulesets.UI
 
         public sealed override void SetRecordTarget(Score score)
         {
-            if (!(KeyBindingInputManager is IHasRecordingHandler recordingInputManager))
+            if (KeyBindingInputManager is not IHasRecordingHandler recordingInputManager)
                 throw new InvalidOperationException($"A {nameof(KeyBindingInputManager)} which supports recording is not available");
 
             if (score == null)
@@ -326,10 +326,6 @@ namespace osu.Game.Rulesets.UI
             }
         }
 
-        public override void SetAIInput()
-        {
-            throw new NotImplementedException();
-        }
 
         /// <summary>
         /// Creates a <see cref="DrawableHitObject{TObject}"/> to represent a <see cref="HitObject"/>.
@@ -591,11 +587,6 @@ namespace osu.Game.Rulesets.UI
         /// Invoked when the user requests to pause while the resume overlay is active.
         /// </summary>
         public abstract void CancelResume();
-
-        /// <summary>
-        /// Sets a AI input to be used to play the game
-        /// </summary>
-        public abstract void SetAIInput();
     }
 
     public class BeatmapInvalidForRulesetException : ArgumentException
