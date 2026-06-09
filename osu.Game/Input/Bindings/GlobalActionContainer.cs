@@ -32,17 +32,18 @@ namespace osu.Game.Input.Bindings
         /// IMPORTANT: Take care when changing order of the items in the enumerable.
         /// It is used to decide the order of precedence, with the earlier items having higher precedence.
         /// </remarks>
-        public override IEnumerable<IKeyBinding> DefaultKeyBindings => globalKeyBindings
-                                                                       .Concat(editorKeyBindings)
-                                                                       .Concat(editorTestPlayKeyBindings)
-                                                                       .Concat(inGameKeyBindings)
-                                                                       .Concat(replayKeyBindings)
-                                                                       .Concat(songSelectKeyBindings)
-                                                                       .Concat(audioControlKeyBindings)
-                                                                       // Overlay bindings may conflict with more local cases like the editor so they are checked last.
-                                                                       // It has generally been agreed on that local screens like the editor should have priority,
-                                                                       // based on such usages potentially requiring a lot more key bindings that may be "shared" with global ones.
-                                                                       .Concat(overlayKeyBindings);
+        public override IEnumerable<IKeyBinding> DefaultKeyBindings
+            => globalKeyBindings
+               .Concat(editorKeyBindings)
+               .Concat(editorTestPlayKeyBindings)
+               .Concat(inGameKeyBindings)
+               .Concat(replayKeyBindings)
+               .Concat(songSelectKeyBindings)
+               .Concat(audioControlKeyBindings)
+               // Overlay bindings may conflict with more local cases like the editor so they are checked last.
+               // It has generally been agreed on that local screens like the editor should have priority,
+               // based on such usages potentially requiring a lot more key bindings that may be "shared" with global ones.
+               .Concat(overlayKeyBindings);
 
         public static IEnumerable<KeyBinding> GetDefaultBindingsFor(GlobalActionCategory category)
         {

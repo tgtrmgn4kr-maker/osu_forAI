@@ -67,6 +67,8 @@ namespace osu.Game.Screens.Play
             return false;
         }
 
+        // There are two method to create a ReplayPlayer
+        // SoloSongSelect 用這個
         public ReplayPlayer(Score score, PlayerConfiguration? configuration = null)
             : this((_, _) => score, configuration)
         {
@@ -91,6 +93,7 @@ namespace osu.Game.Screens.Play
             if (!LoadedBeatmapSuccessfully)
                 return;
 
+            // 在遊戲過程中更新排行榜
             AddInternal(leaderboardProvider);
 
             GameplayClockContainer.Add(ReplayOverlay = new ReplayOverlay());

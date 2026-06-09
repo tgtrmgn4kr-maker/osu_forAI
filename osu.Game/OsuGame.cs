@@ -902,10 +902,12 @@ namespace osu.Game
 
                 switch (presentType)
                 {
+                    // Replay
                     case ScorePresentType.Gameplay:
                         screen.Push(new ReplayPlayerLoader(databasedScore));
                         break;
 
+                    // 結算畫面
                     case ScorePresentType.Results:
                         screen.Push(new SoloResultsScreen(databasedScore.ScoreInfo));
                         break;

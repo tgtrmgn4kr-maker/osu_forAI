@@ -22,6 +22,7 @@ using osu.Game.Scoring;
 using osu.Game.Screens.Play;
 using osuTK;
 using osu.Game.Rulesets.Osu.AI;
+using osu.Game.Rulesets.Osu.AI.Play;
 
 
 namespace osu.Game.Rulesets.Osu.UI
@@ -39,6 +40,7 @@ namespace osu.Game.Rulesets.Osu.UI
         private ObjectTracker? objectTracker = null;
         private RewardTracker? rewardTracker = null;
         private SharedTrackerState? sharedState = null;
+        private SharedActionReader? actionReader = null;
 
 
 
@@ -53,6 +55,7 @@ namespace osu.Game.Rulesets.Osu.UI
         private void load(ReplayPlayer? replayPlayer)
         {
             sharedState = new();
+            actionReader = new();
             objectTracker = new ObjectTracker(aIPlayfield, sharedState);
             rewardTracker = new RewardTracker(aIPlayfield, sharedState);
 
@@ -100,6 +103,8 @@ namespace osu.Game.Rulesets.Osu.UI
             objectTracker!.Update();
         }
         protected override ReplayInputHandler CreateReplayInputHandler(Replay replay) => new OsuFramedReplayInputHandler(replay);
+
+        protected override AIInputHandler CreateAIInputHandler() => new OsuAIInputHandler(actionReader!);
 
         protected override ReplayRecorder CreateReplayRecorder(Score score) => new OsuReplayRecorder(score);
 

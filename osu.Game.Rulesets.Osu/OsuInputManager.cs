@@ -20,6 +20,7 @@ namespace osu.Game.Rulesets.Osu
     {
         public SlimReadOnlyListWrapper<OsuAction> PressedActions => KeyBindingContainer.PressedActions;
 
+
         /// <summary>
         /// Whether gameplay input buttons should be allowed.
         /// Defaults to <c>true</c>, generally used for mods like Relax which turn off main inputs.

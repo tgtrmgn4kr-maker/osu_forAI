@@ -33,12 +33,13 @@ namespace osu.Game.AI
             mmf = MemoryMappedFile.CreateOrOpen(name, size);
             accessor = mmf.CreateViewAccessor();
             accessor.SafeMemoryMappedViewHandle.AcquirePointer(ref ptr);
+
         }
-
         public ActionData Read()
+        {
             // 將 byte* 轉成 Action* 後取值
-            => *(ActionData*)ptr;
-
+            return *(ActionData*)ptr;
+        }
 
         public void Dispose()
         {

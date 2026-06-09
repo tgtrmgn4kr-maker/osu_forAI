@@ -25,7 +25,7 @@ using static osu.Game.Input.Handlers.ReplayInputHandler;
 
 namespace osu.Game.Rulesets.UI
 {
-    public abstract partial class RulesetInputManager<T> : PassThroughInputManager, ICanAttachHUDPieces, IHasReplayHandler, IHasRecordingHandler
+    public abstract partial class RulesetInputManager<T> : PassThroughInputManager, ICanAttachHUDPieces, IHasReplayHandler, IHasRecordingHandler, IHasAIHandler
         where T : struct
     {
         protected override bool AllowRightClickFromLongTouch => false;
@@ -123,10 +123,36 @@ namespace osu.Game.Rulesets.UI
                 new ReplayStateReset().Apply(CurrentState, this);
 
                 replayInputHandler = value;
+                // If not use
                 UseParentInput = replayInputHandler == null;
 
                 if (replayInputHandler != null)
                     AddHandler(replayInputHandler);
+            }
+        }
+
+        #endregion
+
+        #region  IHasAIHandler
+
+        private AIInputHandler? aIInputHandler;
+
+        public AIInputHandler? AIInputHandler
+        {
+            get => aIInputHandler;
+            set
+            {
+                if (aIInputHandler == value)
+                    return;
+
+                if (aIInputHandler != null)
+                    RemoveHandler(aIInputHandler);
+
+                aIInputHandler = value;
+                UseParentInput = aIInputHandler == null;
+
+                if (aIInputHandler != null)
+                    AddHandler(aIInputHandler);
             }
         }
 

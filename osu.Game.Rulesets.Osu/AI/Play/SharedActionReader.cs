@@ -2,10 +2,12 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System;
+using System.Collections.Generic;
 using System.IO.MemoryMappedFiles;
 using System.Runtime.InteropServices;
+using osuTK;
 
-namespace osu.Game.Rulesets.Osu.AI
+namespace osu.Game.Rulesets.Osu.AI.Play
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct ActionData
@@ -15,6 +17,11 @@ namespace osu.Game.Rulesets.Osu.AI
 
         public byte K1;
         public byte K2;
+    }
+    public struct OsuActionData
+    {
+        public Vector2 CursorPosition;
+        public List<OsuAction> OsuActions;
     }
 
     public unsafe class SharedActionReader : IDisposable
@@ -26,15 +33,30 @@ namespace osu.Game.Rulesets.Osu.AI
 
         public SharedActionReader(string name = "Osu_Action")
         {
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                throw new PlatformNotSupportedException("This library only supports Windows.");
+
             int size = sizeof(ActionData);
             mmf = MemoryMappedFile.CreateOrOpen(name, size);
             accessor = mmf.CreateViewAccessor();
             accessor.SafeMemoryMappedViewHandle.AcquirePointer(ref ptr);
 
         }
-        public ActionData Read()
+        public Tuple<Vector2, List<OsuAction>> Read()
         {
-            return *(ActionData*)ptr;
+            // 將 byte* 轉成 Action* 後取值
+            var actionData = *(ActionData*)ptr;
+            var action = new List<OsuAction>();
+            if (actionData.K1 != 0)
+                action.Add(OsuAction.LeftButton);
+            if (actionData.K2 != 0)
+                action.Add(OsuAction.RightButton);
+
+            return new Tuple<Vector2, List<OsuAction>>
+            (
+                new Vector2(actionData.CursorX, actionData.CursorY),
+                action
+            );
         }
 
         public void Dispose()

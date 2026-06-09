@@ -326,6 +326,22 @@ namespace osu.Game.Rulesets.UI
             }
         }
 
+        public override void SetAIHandler()
+        {
+            if (KeyBindingInputManager is not IHasAIHandler aIInputManager)
+                throw new InvalidOperationException($"A {nameof(KeyBindingInputManager)} which supports AI play loading is not available");
+
+            var handler = CreateAIInputHandler();
+
+            aIInputManager.AIInputHandler = handler;
+
+            if (aIInputManager.AIInputHandler != null)
+                aIInputManager.AIInputHandler.GamefieldToScreenSpace = Playfield.GamefieldToScreenSpace;
+
+            if (!ProvidingUserCursor)
+                Playfield.Cursor?.Show();
+        }
+
 
         /// <summary>
         /// Creates a <see cref="DrawableHitObject{TObject}"/> to represent a <see cref="HitObject"/>.
@@ -351,6 +367,8 @@ namespace osu.Game.Rulesets.UI
         protected abstract PassThroughInputManager CreateInputManager();
 
         protected virtual ReplayInputHandler CreateReplayInputHandler(Replay replay) => null;
+
+        protected virtual AIInputHandler CreateAIInputHandler() => null;
 
         protected virtual ReplayRecorder CreateReplayRecorder(Score score) => null;
 
@@ -569,6 +587,12 @@ namespace osu.Game.Rulesets.UI
         /// </summary>
         /// <param name="replayScore">The replay, null for local input.</param>
         public abstract void SetReplayScore(Score replayScore);
+
+        /// <summary>
+        /// Sets a AI input to be used, overriding local input.
+        /// </summary>
+
+        public abstract void SetAIHandler();
 
         /// <summary>
         /// Sets a replay to be used to record gameplay.

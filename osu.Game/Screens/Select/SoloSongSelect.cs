@@ -98,6 +98,7 @@ namespace osu.Game.Screens.Select
         {
             if (playerLoader != null) return;
 
+            // 保存遊戲Mod
             modsAtGameplayStart = Mods.Value.Select(m => m.DeepClone()).ToArray();
 
             // Ctrl+Enter should start map with autoplay enabled.
@@ -132,13 +133,14 @@ namespace osu.Game.Screens.Select
 
                 var replayGeneratingMod = Mods.Value.OfType<ICreateReplayData>().FirstOrDefault();
 
+                // ReplayPlayer和SoloPlayer都可以用PlayerLoader
                 if (replayGeneratingMod != null)
                 {
                     player = new ReplayPlayer(replayGeneratingMod.CreateScoreFromReplayData);
                 }
                 else
                 {
-                    player = new SoloPlayer();
+                    player = new AIPlayer();
                 }
 
                 return player;

@@ -2,19 +2,35 @@ NOTE
 ===
 The Note is for the better developing experience
 
-## Osu.Game \ Skinning
+## AI player 操作
+
+### Osu.Game \ Skinning
 - \ IAnimationTimeReference.cs
   - AnimationStartTime The time which animations should be started from
 
-## Osu.Game \ Input \ Handlers
-- \ AIInputHandler.cs
-  - 處理 AI input
-
-## Osu.Game \ Rulesets \ UI
+### Osu.Game \ Rulesets \ UI
 - DrawableRuleset.cs
   - 插入AI input
 
-## Osu.Game \ Rulesets \ objects \ scoring
+### Osu.Game \ Screens \ Select
+- \ SoloSongSelect.cs
+  - ln:97 OnStart 在遊戲開始時 Load Player
+
+### Osu.Game \ Input \ Handlers
+- \ AIInputHandler.cs
+  - 處理 AI input
+
+### Osu.Game \ Input \ Bindings
+- \ GlobalActionContainer.cs
+  - 所有操作
+
+### Osu.Game \ Graphics \ Containers
+- \ ParallaxContainer.cs
+  - ln:69 Update 每一幀的Mouse Position
+
+## Object 邏輯
+
+### Osu.Game \ Rulesets \ objects \ scoring
 - \ HitResult.cs
   - HitResult的定義
 - \ scoreprocesser.cs
@@ -27,11 +43,11 @@ The Note is for the better developing experience
 - \ HitWindows.cs
   - **Important** ln:82 ResultFor 判定的邏輯
 
-## Osu.Game \ Rulesets \ Judgements
+### Osu.Game \ Rulesets \ Judgements
 - \ JudgementResult.cs
   - ln:14 JudgementResult 的定義
 
-## Osu.Game \ Rulesets \ Objects
+### Osu.Game \ Rulesets \ Objects
 - \ HitObject.cs HitObject的定義
 - \ Drawables
   - \ DrawableHitObject.cs
@@ -48,15 +64,7 @@ The Note is for the better developing experience
 - \ SliderEventGenerator.cs
   - 畫出Slider需要的事件
 
-## Osu.Game \ Graphics \ Containers
-- \ ParallaxContainer.cs
-  - ln:69 Update 每一幀的Mouse Position
-
-## Osu.Game \ Screens \ Select
-- \ SoloSongSelect.cs
-  - ln:97 OnStart 在遊戲開始時 Load Player
-
-## Osu.Game.Rulesets.Osu
+### Osu.Game.Rulesets.Osu
 - \ Drawables
   - \ DrawableHitCircle.cs
     - ln:131 CheckForResult
@@ -108,5 +116,5 @@ The Note is for the better developing experience
     - osu.Game.Rulesets.Osu.Objects.SpinnerBonusTick
     - LargeBonus, IgnoreMiss
 
-## 查看 Debug Console 的篩選條件
+### 查看 Debug Console 的篩選條件
 - [verbose], ![network], ![performance], !OsuScreenStack#559
