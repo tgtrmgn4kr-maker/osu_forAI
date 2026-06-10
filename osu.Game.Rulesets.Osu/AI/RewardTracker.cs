@@ -91,7 +91,6 @@ namespace osu.Game.Rulesets.Osu.AI
                 ResultType = scoreConverter[result.Type],
                 TimeOffset = result.TimeOffset,
             };
-            Logger.Log($"Event: {rewardEvent.TimeOffset}");
             state.SubscribedObjects.Remove(obj.HitObject);
         }
     }

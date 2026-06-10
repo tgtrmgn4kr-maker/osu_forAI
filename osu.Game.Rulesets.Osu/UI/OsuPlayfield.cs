@@ -123,6 +123,7 @@ namespace osu.Game.Rulesets.Osu.UI
                         continue;
 
                     Logger.Log($"New object: {obj.HitObject.StartTime}");
+                    Logger.Log($"Current time: {CurrentTime}");
 
                     OnAIPlayFieldNewDrawableHitObject?.Invoke(obj);
                 }

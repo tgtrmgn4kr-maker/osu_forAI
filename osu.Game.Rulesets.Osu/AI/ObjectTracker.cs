@@ -4,7 +4,6 @@
 using System;
 using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Osu.UI;
-using osu.Framework.Logging;
 using osu.Game.Rulesets.Osu.Objects.Drawables;
 using System.Collections.Generic;
 using osuTK;
@@ -21,7 +20,7 @@ namespace osu.Game.Rulesets.Osu.AI
         {
             public CursorRuntimeData CursorRuntimeData;
             public double CurrentTime;
-            public OsuObjectsData[] Data;
+            public OsuObjectsData[]? Data;
             public SliderRuntimeData SliderRuntimeData;
             public SpinnerRuntimeData SpinnerRuntimeData;
         }
@@ -46,6 +45,10 @@ namespace osu.Game.Rulesets.Osu.AI
             public double Progress;
             public float DirectionX;
             public float DirectionY;
+            public SliderRuntimeData()
+            {
+                Progress = -1;
+            }
         }
         public struct SpinnerRuntimeData
         {
@@ -148,7 +151,6 @@ namespace osu.Game.Rulesets.Osu.AI
                 }
                 else if (objTypeInt == 6) // Spinner
                 {
-                    Logger.Log("Spinner");
                     // There is no need to calculate the position of a spinner
                     double TimeToHit = obj.HitObject.StartTime - playfield!.CurrentTime;
                     data.TimeToHit = TimeToHit / 1000f;
@@ -196,6 +198,9 @@ namespace osu.Game.Rulesets.Osu.AI
                     frameObservation.SliderRuntimeData.DirectionY = deltaPosition.Y / 192f;
                 }
             }
+            if (frameObservation.SliderRuntimeData.Progress == 1 || frameObservation.SliderRuntimeData.Progress == 0)
+                frameObservation.SliderRuntimeData.Progress = -1;
+
         }
         private void trackSpinner()
         {

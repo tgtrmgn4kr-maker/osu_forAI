@@ -46,7 +46,9 @@ namespace osu.Game.Rulesets.Osu.AI.Play
         {
             // 將 byte* 轉成 Action* 後取值
             var actionData = *(ActionData*)ptr;
+
             var action = new List<OsuAction>();
+
             if (actionData.K1 != 0)
                 action.Add(OsuAction.LeftButton);
             if (actionData.K2 != 0)
