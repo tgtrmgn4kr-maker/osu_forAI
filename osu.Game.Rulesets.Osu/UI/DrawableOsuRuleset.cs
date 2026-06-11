@@ -42,6 +42,8 @@ namespace osu.Game.Rulesets.Osu.UI
         private SharedTrackerState? sharedState = null;
         private SharedActionReader? actionReader = null;
 
+        private ObservationWriter? observationWriter = null;
+
 
 
         protected new OsuRulesetConfigManager Config => (OsuRulesetConfigManager)base.Config;
@@ -56,8 +58,9 @@ namespace osu.Game.Rulesets.Osu.UI
         {
             sharedState = new();
             actionReader = new();
-            objectTracker = new ObjectTracker(aIPlayfield, sharedState);
+            objectTracker = new ObjectTracker(aIPlayfield);
             rewardTracker = new RewardTracker(aIPlayfield, sharedState);
+            observationWriter = new ObservationWriter(objectTracker, rewardTracker);
 
             if (replayPlayer != null)
             {
@@ -100,11 +103,18 @@ namespace osu.Game.Rulesets.Osu.UI
         protected override void Update()
         {
             base.Update();
-            objectTracker!.Update();
+
+            // Make sure both trackers get the same frame ID
+            long frameID = aIPlayfield.FrameID;
+            objectTracker!.Update(frameID);
+            rewardTracker!.Update(frameID);
+
+            // When both `objectTracker` and `rewardTracker` have done their `Update()`
+            observationWriter!.Write();
         }
         protected override ReplayInputHandler CreateReplayInputHandler(Replay replay) => new OsuFramedReplayInputHandler(replay);
 
-        protected override AIInputHandler CreateAIInputHandler() => new OsuAIInputHandler(actionReader!, objectTracker!, sharedState!);
+        protected override AIInputHandler CreateAIInputHandler() => new OsuAIInputHandler(actionReader!, objectTracker!, aIPlayfield);
 
         protected override ReplayRecorder CreateReplayRecorder(Score score) => new OsuReplayRecorder(score);
 

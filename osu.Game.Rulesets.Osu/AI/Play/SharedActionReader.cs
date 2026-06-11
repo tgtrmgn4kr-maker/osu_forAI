@@ -65,6 +65,7 @@ namespace osu.Game.Rulesets.Osu.AI.Play
         {
             accessor?.Dispose();
             mmf?.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 

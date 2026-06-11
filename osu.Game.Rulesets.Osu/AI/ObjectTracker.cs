@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using osuTK;
 using osu.Game.Rulesets.Osu.Objects;
 using osu.Game.Rulesets.Objects.Types;
+using System.Runtime.InteropServices;
 
 
 
@@ -16,16 +17,19 @@ namespace osu.Game.Rulesets.Osu.AI
 {
     public class ObjectTracker
     {
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct FrameObservation
         {
-            public CursorRuntimeData CursorRuntimeData;
+            public long FrameID;
             public double CurrentTime;
-            public OsuObjectsData[]? Data;
+
+            public CursorRuntimeData CursorRuntimeData;
             public SliderRuntimeData SliderRuntimeData;
             public SpinnerRuntimeData SpinnerRuntimeData;
         }
 
         // HitCircle and SliderHead
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct OsuObjectsData
         {
             public int ObjectType;
@@ -33,9 +37,14 @@ namespace osu.Game.Rulesets.Osu.AI
             public float DistanceToCursorY;
             public float ScalarDistance;
             public double TimeToHit;
+            public OsuObjectsData()
+            {
+                ObjectType = -1;
+            }
         }
 
         // SliderBall only
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct SliderRuntimeData
         {
             public float DistanceToCursorX;
@@ -50,13 +59,19 @@ namespace osu.Game.Rulesets.Osu.AI
                 Progress = -1;
             }
         }
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct SpinnerRuntimeData
         {
             public double SpinsPerMinute;
             public double RequiredSPM;
             public double Progress;
             public double RemainingTime;
+            public SpinnerRuntimeData()
+            {
+                Progress = -1;
+            }
         }
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct CursorRuntimeData
         {
             public float X;
@@ -66,37 +81,39 @@ namespace osu.Game.Rulesets.Osu.AI
         }
         private Dictionary<Type, int> objectType = new()
         {
-            [typeof(DrawableHitCircle)] = 0,
+            [typeof(DrawableHitCircle)] = 1,
 
-            [typeof(DrawableSliderHead)] = 1,
-            [typeof(DrawableSliderTail)] = 2,
-            [typeof(DrawableSlider)] = 3,
-            [typeof(DrawableSliderRepeat)] = 4,
-            [typeof(DrawableSliderTick)] = 5,
+            [typeof(DrawableSliderHead)] = 2,
+            [typeof(DrawableSliderTail)] = 3,
+            [typeof(DrawableSlider)] = 4,
+            [typeof(DrawableSliderRepeat)] = 5,
+            [typeof(DrawableSliderTick)] = 6,
 
-            [typeof(DrawableSpinner)] = 6,
-            [typeof(DrawableSpinnerTick)] = 7,
-            [typeof(DrawableSpinnerBonusTick)] = 8,
+            [typeof(DrawableSpinner)] = 7,
+            [typeof(DrawableSpinnerTick)] = 8,
+            [typeof(DrawableSpinnerBonusTick)] = 9,
         };
 
-        public ObjectTracker(OsuPlayfield.AIPlayfield playfield, SharedTrackerState state)
-        {
-            this.playfield = playfield;
-            this.state = state;
-
-            // The first frame
-            previousCursorX = playfield!.CursorPosition.X;
-            previousCursorY = playfield!.CursorPosition.Y;
-        }
-
-        private SharedTrackerState state;
         private OsuPlayfield.AIPlayfield? playfield;
         private FrameObservation frameObservation;
+
+        public OsuObjectsData[] GetData { get; private set; }
         public FrameObservation GetFrameObservation => frameObservation;
         private int count;
         private double previousTime;
         private float previousCursorX;
         private float previousCursorY;
+        private long frameID;
+
+        public ObjectTracker(OsuPlayfield.AIPlayfield playfield)
+        {
+            this.playfield = playfield;
+
+            // The first frame
+            previousCursorX = playfield!.CursorPosition.X;
+            previousCursorY = playfield!.CursorPosition.Y;
+            GetData = new OsuObjectsData[10];
+        }
 
         private void getNext10Objects()
         {
@@ -112,10 +129,11 @@ namespace osu.Game.Rulesets.Osu.AI
             frameObservation = new()
             {
                 CurrentTime = currentTime,
-                Data = new OsuObjectsData[10],
                 SliderRuntimeData = new(),
                 SpinnerRuntimeData = new(),
+                FrameID = frameID
             };
+            GetData = new OsuObjectsData[10];
 
             foreach (DrawableHitObject obj in nextObjects)
             {
@@ -156,16 +174,17 @@ namespace osu.Game.Rulesets.Osu.AI
                     data.TimeToHit = TimeToHit / 1000f;
                 }
 
-                frameObservation.Data[count] = data;
+                GetData[count] = data;
                 count++;
             }
         }
-        public void Update()
+        public void Update(long frameID)
         {
             getNext10Objects();
             trackSliderBall();
             trackSpinner();
             trackCursor();
+            this.frameID = frameID;
         }
 
         private void trackSliderBall()

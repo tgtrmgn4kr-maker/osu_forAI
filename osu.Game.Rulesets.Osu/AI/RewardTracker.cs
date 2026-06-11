@@ -6,10 +6,9 @@ using osu.Game.Rulesets.Osu.Objects.Drawables;
 using osu.Game.Rulesets.Judgements;
 using osu.Game.Rulesets.Osu.UI;
 using System.Collections.Generic;
-using osu.Framework.Logging;
 using System;
 using osu.Game.Rulesets.Scoring;
-
+using System.Runtime.InteropServices;
 
 
 
@@ -17,6 +16,15 @@ namespace osu.Game.Rulesets.Osu.AI
 {
     public class RewardTracker
     {
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        public struct RewardEvent
+        {
+            public long EventID;
+            public long FrameID;
+            public int ObjectType;
+            public int ResultType;
+            public double TimeOffset;
+        }
         private Dictionary<Type, int> objectType = new()
         {
             // HitCircle
@@ -59,20 +67,24 @@ namespace osu.Game.Rulesets.Osu.AI
             {HitResult.IgnoreMiss, -1},
         };
 
-        public struct RewardEvent
-        {
-            public int ObjectType;
-            public int ResultType;
-            public double TimeOffset;
-        }
+        private long currentFrameID;
+        private long eventID;
+        private readonly SharedTrackerState state;
+
+        private RewardEvent rewardEvent;
+
+        public RewardEvent[] GetRewards { get; private set; }
+        private int rewardCount;
 
         public RewardTracker(OsuPlayfield.AIPlayfield playfield, SharedTrackerState state)
         {
             playfield.OnAIPlayFieldNewDrawableHitObject += CollectObjects;
             this.state = state;
-        }
-        private readonly SharedTrackerState state;
 
+            eventID = 0;
+            rewardCount = 0;
+            GetRewards = new RewardEvent[5];
+        }
 
         internal void CollectObjects(DrawableHitObject obj)
         {
@@ -84,14 +96,27 @@ namespace osu.Game.Rulesets.Osu.AI
         }
         public void ScoreGetter(DrawableHitObject obj, JudgementResult result)
         {
-
-            RewardEvent rewardEvent = new()
+            rewardEvent = new()
             {
                 ObjectType = objectType[obj.GetType()],
                 ResultType = scoreConverter[result.Type],
                 TimeOffset = result.TimeOffset,
+                FrameID = currentFrameID,
+                EventID = eventID,
             };
+
+            eventID++;
+
+            GetRewards[rewardCount] = rewardEvent;
+            rewardCount++;
+
             state.SubscribedObjects.Remove(obj.HitObject);
+        }
+        public void Update(long frameID)
+        {
+            currentFrameID = frameID;
+            rewardCount = 0;
+            GetRewards = new RewardEvent[5];
         }
     }
 

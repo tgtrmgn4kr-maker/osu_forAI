@@ -24,7 +24,6 @@ using osu.Game.Rulesets.Osu.UI.Cursor;
 using osu.Game.Rulesets.Scoring;
 using osu.Game.Rulesets.UI;
 using osuTK;
-using osu.Framework.Logging;
 
 namespace osu.Game.Rulesets.Osu.UI
 {
@@ -106,12 +105,13 @@ namespace osu.Game.Rulesets.Osu.UI
             public double CurrentTime;
             public Vector2 CursorPosition;
 
-            private int count = 0;
+            public long FrameID;
+
             protected override void Update()
             {
                 base.Update();
 
-                count++;
+                FrameID++;
 
                 CurrentTime = Clock.CurrentTime;
 
@@ -121,9 +121,6 @@ namespace osu.Game.Rulesets.Osu.UI
                 {
                     if (!tracked.Add(obj.HitObject))
                         continue;
-
-                    Logger.Log($"New object: {obj.HitObject.StartTime}");
-                    Logger.Log($"Current time: {CurrentTime}");
 
                     OnAIPlayFieldNewDrawableHitObject?.Invoke(obj);
                 }
