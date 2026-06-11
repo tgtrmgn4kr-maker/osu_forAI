@@ -22,8 +22,6 @@ namespace osu.Game.Rulesets.Osu.AI.Play
         private int count;
 
         // Test
-        private double nextHitObjectTime;
-        private Vector2 lastPos;
         private HashSet<double> hitObjects = new();
         private OsuPlayfield.AIPlayfield playfield;
         //
@@ -91,7 +89,7 @@ namespace osu.Game.Rulesets.Osu.AI.Play
                     return;
                 }
             }
-            */
+
 
             void hit(Vector2 pos)
             {
@@ -117,7 +115,7 @@ namespace osu.Game.Rulesets.Osu.AI.Play
                 {
                     PressedActions = new List<OsuAction> { count == 0 ? OsuAction.LeftButton : OsuAction.RightButton }
                 });
-            }
+            }*/
         }
     }
 }

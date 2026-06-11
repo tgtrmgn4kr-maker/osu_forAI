@@ -28,7 +28,7 @@ namespace osu.Game.Rulesets.Osu.AI
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct SharedObservation
         {
-            public long FrameID;  //
+            public long FrameID;
             public double CurrentTime;
             public ObjectTracker.CursorRuntimeData CursorRuntimeData;
             public ObjectTracker.SliderRuntimeData SliderRuntimeData;
@@ -56,7 +56,7 @@ namespace osu.Game.Rulesets.Osu.AI
             public double TimeOffset;
         }
 
-        public ObservationWriter(ObjectTracker objectTracker, RewardTracker rewardTracker, string name = "Osu_obs")
+        public ObservationWriter(ObjectTracker objectTracker, RewardTracker rewardTracker, string name = "osu_obs")
         {
             this.objectTracker = objectTracker;
             this.rewardTracker = rewardTracker;

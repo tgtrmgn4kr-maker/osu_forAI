@@ -11,7 +11,6 @@ using osu.Game.Rulesets.Scoring;
 using System.Runtime.InteropServices;
 
 
-
 namespace osu.Game.Rulesets.Osu.AI
 {
     public class RewardTracker
@@ -20,7 +19,6 @@ namespace osu.Game.Rulesets.Osu.AI
         public struct RewardEvent
         {
             public long EventID;
-            public long FrameID;
             public int ObjectType;
             public int ResultType;
             public double TimeOffset;
@@ -67,7 +65,6 @@ namespace osu.Game.Rulesets.Osu.AI
             {HitResult.IgnoreMiss, -1},
         };
 
-        private long currentFrameID;
         private long eventID;
         private readonly SharedTrackerState state;
 
@@ -88,20 +85,22 @@ namespace osu.Game.Rulesets.Osu.AI
 
         internal void CollectObjects(DrawableHitObject obj)
         {
-            if (!state.SubscribedObjects.Contains(obj.HitObject))
+            if (!state.SubscribedObjects.Contains(obj.HitObject) && !state.SubscribedInt.Contains(obj.GetHashCode()) && !state.SubscribedInt.Contains(obj.HitObject.GetHashCode()))
             {
                 obj.OnNewResult += ScoreGetter;
                 state.SubscribedObjects.Add(obj.HitObject);
+                state.SubscribedInt.Add(obj.HitObject.GetHashCode());
             }
         }
         public void ScoreGetter(DrawableHitObject obj, JudgementResult result)
         {
+            obj.OnNewResult -= ScoreGetter;
+
             rewardEvent = new()
             {
                 ObjectType = objectType[obj.GetType()],
                 ResultType = scoreConverter[result.Type],
                 TimeOffset = result.TimeOffset,
-                FrameID = currentFrameID,
                 EventID = eventID,
             };
 
@@ -110,14 +109,11 @@ namespace osu.Game.Rulesets.Osu.AI
             GetRewards[rewardCount] = rewardEvent;
             rewardCount++;
 
-            state.SubscribedObjects.Remove(obj.HitObject);
         }
-        public void Update(long frameID)
+        public void Update()
         {
-            currentFrameID = frameID;
-            rewardCount = 0;
             GetRewards = new RewardEvent[5];
+            rewardCount = 0;
         }
     }
-
 }

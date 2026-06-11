@@ -23,6 +23,7 @@ using osu.Game.Screens.Play;
 using osuTK;
 using osu.Game.Rulesets.Osu.AI;
 using osu.Game.Rulesets.Osu.AI.Play;
+using osu.Framework.Logging;
 
 
 namespace osu.Game.Rulesets.Osu.UI
@@ -51,6 +52,7 @@ namespace osu.Game.Rulesets.Osu.UI
         public DrawableOsuRuleset(Ruleset ruleset, IBeatmap beatmap, IReadOnlyList<Mod>? mods = null)
             : base(ruleset, beatmap, mods)
         {
+            Logger.Log($"RewardTracker Created {GetHashCode()}");
         }
 
         [BackgroundDependencyLoader]
@@ -107,7 +109,7 @@ namespace osu.Game.Rulesets.Osu.UI
             // Make sure both trackers get the same frame ID
             long frameID = aIPlayfield.FrameID;
             objectTracker!.Update(frameID);
-            rewardTracker!.Update(frameID);
+            rewardTracker!.Update();
 
             // When both `objectTracker` and `rewardTracker` have done their `Update()`
             observationWriter!.Write();
