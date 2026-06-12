@@ -130,5 +130,11 @@ namespace osu.Game.Rulesets.Osu.UI
                 return 0;
             }
         }
+
+        protected override void Dispose(bool isDisposing)
+        {
+            observationWriter!.Dispose();
+            base.Dispose(isDisposing);
+        }
     }
 }

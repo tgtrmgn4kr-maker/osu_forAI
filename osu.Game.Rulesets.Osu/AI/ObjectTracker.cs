@@ -20,6 +20,7 @@ namespace osu.Game.Rulesets.Osu.AI
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct FrameObservation
         {
+            public byte Playing;
             public long FrameID;
             public double CurrentTime;
 
@@ -134,6 +135,11 @@ namespace osu.Game.Rulesets.Osu.AI
                 FrameID = frameID
             };
             GetData = new OsuObjectsData[10];
+
+            if (playfield.HitObjectContainer.Playing)
+                frameObservation.Playing = 1;
+            else
+                frameObservation.Playing = 0;
 
             foreach (DrawableHitObject obj in nextObjects)
             {

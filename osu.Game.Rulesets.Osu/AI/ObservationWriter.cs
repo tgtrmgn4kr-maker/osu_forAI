@@ -13,9 +13,9 @@ namespace osu.Game.Rulesets.Osu.AI
         private RewardTracker rewardTracker;
         private byte* ptr;
         private byte* shmPtr;
-        private int sizeOfObservation = Marshal.SizeOf<SharedObservation>();
-        private int sizeofOsuObjectData = Marshal.SizeOf<OsuObjectData>();
-        private int sizeOfReward = Marshal.SizeOf<RewardEvent>();
+        private int sizeOfObservation = Marshal.SizeOf<ObjectTracker.FrameObservation>();
+        private int sizeofOsuObjectData = Marshal.SizeOf<ObjectTracker.OsuObjectsData>();
+        private int sizeOfReward = Marshal.SizeOf<RewardTracker.RewardEvent>();
         private int totalSize;
         private int currentBuffer;
         private int bufferSizeOfSharedObservation;
@@ -24,37 +24,6 @@ namespace osu.Game.Rulesets.Osu.AI
 
         private MemoryMappedFile mmf;
         private MemoryMappedViewAccessor accessor;
-
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        public struct SharedObservation
-        {
-            public long FrameID;
-            public double CurrentTime;
-            public ObjectTracker.CursorRuntimeData CursorRuntimeData;
-            public ObjectTracker.SliderRuntimeData SliderRuntimeData;
-            public ObjectTracker.SpinnerRuntimeData SpinnerRuntimeData;
-        }
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        public struct OsuObjectData
-        {
-            public int ObjectType;
-            public float DistanceToCursorX;
-            public float DistanceToCursorY;
-            public float ScalarDistance;
-            public double TimeToHit;
-            public OsuObjectData()
-            {
-                ObjectType = -1;
-            }
-        }
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        public struct RewardEvent
-        {
-            public long EventID;
-            public int ObjectType;
-            public int ResultType;
-            public double TimeOffset;
-        }
 
         public ObservationWriter(ObjectTracker objectTracker, RewardTracker rewardTracker, string name = "osu_obs")
         {
@@ -79,14 +48,14 @@ namespace osu.Game.Rulesets.Osu.AI
             currentBuffer = 0;
 
         }
-        private void setMemory()
+        private void setPointer()
         {
-            ptr = shmPtr + currentBuffer * totalSize;
+            ptr = shmPtr;
         }
 
         public void Write()
         {
-            setMemory();
+            setPointer();
 
             *(ObjectTracker.FrameObservation*)ptr = objectTracker.GetFrameObservation;
             ptr += Marshal.SizeOf<ObjectTracker.FrameObservation>();
@@ -110,6 +79,10 @@ namespace osu.Game.Rulesets.Osu.AI
 
         public void Dispose()
         {
+            setPointer();
+            ObjectTracker.FrameObservation doneFrame = new();
+            *(ObjectTracker.FrameObservation*)ptr = doneFrame;
+
             accessor?.Dispose();
             mmf?.Dispose();
         }

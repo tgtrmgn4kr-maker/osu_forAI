@@ -25,6 +25,9 @@ namespace osu.Game.Rulesets.UI
 
         public IEnumerable<DrawableHitObject> Get10AliveObjects() => AliveObjects.Take(10);
 
+        public bool Playing => InternalChildren.Cast<DrawableHitObject>().Any();
+        public bool Disposed;
+
         public DrawableHitObject GetNextSlider() => AliveObjects.FirstOrDefault();
         public DrawableHitObject GetNextSpinner() => AliveObjects.FirstOrDefault();
 
@@ -60,6 +63,7 @@ namespace osu.Game.Rulesets.UI
         public HitObjectContainer()
         {
             RelativeSizeAxes = Axes.Both;
+            Disposed = false;
         }
 
         protected override void LoadAsyncComplete()
@@ -196,6 +200,7 @@ namespace osu.Game.Rulesets.UI
 
         protected override void Dispose(bool isDisposing)
         {
+            Disposed = true;
             base.Dispose(isDisposing);
             unbindAllStartTimes();
         }

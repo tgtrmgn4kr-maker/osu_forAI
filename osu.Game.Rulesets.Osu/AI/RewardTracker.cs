@@ -26,43 +26,43 @@ namespace osu.Game.Rulesets.Osu.AI
         private Dictionary<Type, int> objectType = new()
         {
             // HitCircle
-            [typeof(DrawableHitCircle)] = 0,
+            [typeof(DrawableHitCircle)] = 1,
 
             // Slider
-            [typeof(DrawableSliderHead)] = 1,
-            [typeof(DrawableSliderTail)] = 2,
-            [typeof(DrawableSlider)] = 3,
-            [typeof(DrawableSliderRepeat)] = 4,
-            [typeof(DrawableSliderTick)] = 5,
+            [typeof(DrawableSliderHead)] = 2,
+            [typeof(DrawableSliderTail)] = 3,
+            [typeof(DrawableSlider)] = 4,
+            [typeof(DrawableSliderRepeat)] = 5,
+            [typeof(DrawableSliderTick)] = 6,
 
             // Spinner
-            [typeof(DrawableSpinner)] = 6,
-            [typeof(DrawableSpinnerTick)] = 7,
-            [typeof(DrawableSpinnerBonusTick)] = 8,
+            [typeof(DrawableSpinner)] = 7,
+            [typeof(DrawableSpinnerTick)] = 8,
+            [typeof(DrawableSpinnerBonusTick)] = 9,
         };
 
         private Dictionary<HitResult, int> scoreConverter = new()
         {
             // HitCircle, Spinner, SliderHead
-            {HitResult.Great, 0},
-            {HitResult.Good, 1},
-            {HitResult.Ok, 2},
-            {HitResult.Meh, 3},
-            {HitResult.Miss, 4},
+            {HitResult.Great, 1},
+            {HitResult.Good, 2},
+            {HitResult.Ok, 3},
+            {HitResult.Meh, 4},
+            {HitResult.Miss, 5},
 
             // SliderTick, SliderRepeat
-            {HitResult.LargeTickHit, 5},
-            {HitResult.LargeTickMiss, 6},
+            {HitResult.LargeTickHit, 6},
+            {HitResult.LargeTickMiss, 7},
 
             // SpinnerTick
-            {HitResult.SmallBonus, 7},
+            {HitResult.SmallBonus, 8},
             // SpinnerBonusTick
-            {HitResult.LargeBonus, 8},
+            {HitResult.LargeBonus, 9},
 
             // Slider
-            {HitResult.SliderTailHit, 9},
-            {HitResult.IgnoreHit, -1},
-            {HitResult.IgnoreMiss, -1},
+            {HitResult.SliderTailHit, 10},
+            {HitResult.IgnoreHit, 0},
+            {HitResult.IgnoreMiss, 0},
         };
 
         private long eventID;
