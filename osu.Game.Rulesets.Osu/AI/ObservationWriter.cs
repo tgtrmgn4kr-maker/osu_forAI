@@ -17,7 +17,6 @@ namespace osu.Game.Rulesets.Osu.AI
         private int sizeofOsuObjectData = Marshal.SizeOf<ObjectTracker.OsuObjectsData>();
         private int sizeOfReward = Marshal.SizeOf<RewardTracker.RewardEvent>();
         private int totalSize;
-        private int currentBuffer;
         private int bufferSizeOfSharedObservation;
         private int bufferSizeOfObjectData;
         private int bufferSizeOfReward;
@@ -44,9 +43,6 @@ namespace osu.Game.Rulesets.Osu.AI
             accessor = mmf.CreateViewAccessor();
 
             accessor.SafeMemoryMappedViewHandle.AcquirePointer(ref shmPtr);
-
-            currentBuffer = 0;
-
         }
         private void setPointer()
         {
@@ -71,8 +67,6 @@ namespace osu.Game.Rulesets.Osu.AI
                 *(RewardTracker.RewardEvent*)ptr = rewardTracker.GetRewards[i];
                 ptr += Marshal.SizeOf<RewardTracker.RewardEvent>();
             }
-
-            currentBuffer = 1 - currentBuffer;
 
         }
 

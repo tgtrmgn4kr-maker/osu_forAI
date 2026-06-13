@@ -33,15 +33,13 @@ namespace osu.Game.Rulesets.Osu.AI
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct OsuObjectsData
         {
-            public int ObjectType;
+            public byte IsCircle;
+            public byte IsSlider;
+            public byte IsSpinner;
             public float DistanceToCursorX;
             public float DistanceToCursorY;
             public float ScalarDistance;
             public double TimeToHit;
-            public OsuObjectsData()
-            {
-                ObjectType = -1;
-            }
         }
 
         // SliderBall only
@@ -146,9 +144,9 @@ namespace osu.Game.Rulesets.Osu.AI
                 // All the data is normalised
                 OsuObjectsData data = new();
                 int objTypeInt = objectType[obj.GetType()];
-                data.ObjectType = objTypeInt;
                 if (objTypeInt == 0) // HitCircle
                 {
+                    data.IsCircle = 1;
                     // Make sure that the position is relative position
                     Vector2 position = ((OsuHitObject)obj.HitObject).StackedPosition;
 
@@ -162,6 +160,7 @@ namespace osu.Game.Rulesets.Osu.AI
                 }
                 else if (objTypeInt == 3) // Slider
                 {
+                    data.IsSlider = 1;
                     var slider = (DrawableSlider)obj;
                     Vector2 position = slider.HitObject.StackedPosition;
 
@@ -175,6 +174,7 @@ namespace osu.Game.Rulesets.Osu.AI
                 }
                 else if (objTypeInt == 6) // Spinner
                 {
+                    data.IsSpinner = 1;
                     // There is no need to calculate the position of a spinner
                     double TimeToHit = obj.HitObject.StartTime - playfield!.CurrentTime;
                     data.TimeToHit = TimeToHit / 1000f;
@@ -221,11 +221,11 @@ namespace osu.Game.Rulesets.Osu.AI
                     var deltaPosition = nextPosition - position;
                     frameObservation.SliderRuntimeData.DirectionX = deltaPosition.X / 256f;
                     frameObservation.SliderRuntimeData.DirectionY = deltaPosition.Y / 192f;
+                    return;
                 }
             }
-            if (frameObservation.SliderRuntimeData.Progress == 1 || frameObservation.SliderRuntimeData.Progress == 0)
-                frameObservation.SliderRuntimeData.Progress = -1;
 
+            frameObservation.SliderRuntimeData.Progress = -1;
         }
         private void trackSpinner()
         {
@@ -233,8 +233,8 @@ namespace osu.Game.Rulesets.Osu.AI
             if (hitObject is DrawableSpinner spinner)
             {
                 // The spm calculated by osu for each frame
-                frameObservation.SpinnerRuntimeData.SpinsPerMinute = spinner.SpinsPerMinute.Default / 100f;
-                frameObservation.SpinnerRuntimeData.RequiredSPM = spinner.HitObject.SpinsRequiredForBonus / 100f;
+                frameObservation.SpinnerRuntimeData.SpinsPerMinute = spinner.SpinsPerMinute.Default / 1000f;
+                frameObservation.SpinnerRuntimeData.RequiredSPM = spinner.HitObject.SpinsRequiredForBonus / 1000f;
 
                 double remainingTime = spinner.HitObject.EndTime - playfield!.CurrentTime;
                 double totalTime = spinner.HitObject.Duration;
