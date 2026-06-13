@@ -116,7 +116,7 @@ namespace osu.Game.Rulesets.Osu.UI
         }
         protected override ReplayInputHandler CreateReplayInputHandler(Replay replay) => new OsuFramedReplayInputHandler(replay);
 
-        protected override AIInputHandler CreateAIInputHandler() => new OsuAIInputHandler(actionReader!, objectTracker!, aIPlayfield);
+        protected override AIInputHandler CreateAIInputHandler() => new OsuAIInputHandler(actionReader!);
 
         protected override ReplayRecorder CreateReplayRecorder(Score score) => new OsuReplayRecorder(score);
 

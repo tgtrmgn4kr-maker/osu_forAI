@@ -42,7 +42,7 @@ namespace osu.Game.Rulesets.Osu.AI.Play
             accessor.SafeMemoryMappedViewHandle.AcquirePointer(ref ptr);
 
         }
-        public Tuple<Vector2, List<OsuAction>> Read()
+        public OsuActionData Read()
         {
             // 將 byte* 轉成 Action* 後取值
             var actionData = *(ActionData*)ptr;
@@ -54,11 +54,14 @@ namespace osu.Game.Rulesets.Osu.AI.Play
             if (actionData.K2 != 0)
                 action.Add(OsuAction.RightButton);
 
-            return new Tuple<Vector2, List<OsuAction>>
-            (
-                new Vector2(actionData.CursorX, actionData.CursorY),
-                action
-            );
+            return new OsuActionData
+            {
+                CursorPosition = new Vector2(
+                    actionData.CursorX * 256 + 256,
+                    actionData.CursorY * 192 + 192
+                ),
+                OsuActions = action
+            };
         }
 
         public void Dispose()
