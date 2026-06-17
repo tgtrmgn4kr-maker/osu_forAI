@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System;
 using osu.Game.Rulesets.Scoring;
 using System.Runtime.InteropServices;
+using osu.Framework.Logging;
 
 
 namespace osu.Game.Rulesets.Osu.AI
@@ -22,6 +23,7 @@ namespace osu.Game.Rulesets.Osu.AI
             public int ObjectType;
             public int ResultType;
             public double TimeOffset;
+            public bool Failed;
         }
         private Dictionary<Type, int> objectType = new()
         {
@@ -102,17 +104,18 @@ namespace osu.Game.Rulesets.Osu.AI
                 ResultType = scoreConverter[result.Type],
                 TimeOffset = result.TimeOffset,
                 EventID = eventID,
+                Failed = result.FailedAtJudgement
             };
 
             eventID++;
-
+            Logger.Log($"Failed {rewardEvent.Failed}");
             GetRewards[rewardCount] = rewardEvent;
             rewardCount++;
 
         }
         public void Update()
         {
-            GetRewards = new RewardEvent[5];
+            GetRewards = new RewardEvent[10];
             rewardCount = 0;
         }
     }

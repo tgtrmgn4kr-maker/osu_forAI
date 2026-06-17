@@ -10,7 +10,8 @@ using osuTK;
 using osu.Game.Rulesets.Osu.Objects;
 using osu.Game.Rulesets.Objects.Types;
 using System.Runtime.InteropServices;
-
+using osu.Framework.Logging;
+using osu.Game.AI;
 
 
 namespace osu.Game.Rulesets.Osu.AI
@@ -20,7 +21,7 @@ namespace osu.Game.Rulesets.Osu.AI
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct FrameObservation
         {
-            public byte Playing;
+            public byte PlayingState;
             public long FrameID;
             public double CurrentTime;
 
@@ -103,15 +104,17 @@ namespace osu.Game.Rulesets.Osu.AI
         private float previousCursorX;
         private float previousCursorY;
         private long frameID;
+        private PlayingStateContainer playingStateContainer;
 
-        public ObjectTracker(OsuPlayfield.AIPlayfield playfield)
+        public ObjectTracker(OsuPlayfield.AIPlayfield playfield, PlayingStateContainer playingStateContainer)
         {
             this.playfield = playfield;
-
+            this.playingStateContainer = playingStateContainer;
             // The first frame
             previousCursorX = playfield!.CursorPosition.X;
             previousCursorY = playfield!.CursorPosition.Y;
             GetData = new OsuObjectsData[10];
+            Logger.Log($"State: {playingStateContainer.LocalUserPlayingState}");
         }
 
         private void getNext10Objects()
@@ -133,11 +136,6 @@ namespace osu.Game.Rulesets.Osu.AI
                 FrameID = frameID
             };
             GetData = new OsuObjectsData[10];
-
-            if (playfield.HitObjectContainer.Playing)
-                frameObservation.Playing = 1;
-            else
-                frameObservation.Playing = 0;
 
             foreach (DrawableHitObject obj in nextObjects)
             {
@@ -186,13 +184,19 @@ namespace osu.Game.Rulesets.Osu.AI
         }
         public void Update(long frameID)
         {
-            getNext10Objects();
+            this.frameID = frameID;
+            getNext10Objects(); // Here a new frame observation is created
             trackSliderBall();
             trackSpinner();
             trackCursor();
-            this.frameID = frameID;
+            trackGameState();
         }
 
+        private void trackGameState()
+        {
+            frameObservation.PlayingState = (byte)playingStateContainer.LocalUserPlayingState;
+            //Logger.Log($"Playing State: {frameObservation.PlayingState}");
+        }
         private void trackSliderBall()
         {
             var hitObject = playfield?.HitObjectContainer.GetNextSlider();

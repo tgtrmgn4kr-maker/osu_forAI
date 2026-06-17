@@ -31,12 +31,12 @@ namespace osu.Game.Rulesets.Osu.AI.Play
 
         private byte* ptr;
 
-        public SharedActionReader(string name = "Osu_Action")
+        public SharedActionReader(string name = "osu_action")
         {
             if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 throw new PlatformNotSupportedException("This library only supports Windows.");
 
-            int size = sizeof(ActionData);
+            int size = Marshal.SizeOf<ActionData>();
             mmf = MemoryMappedFile.CreateOrOpen(name, size);
             accessor = mmf.CreateViewAccessor();
             accessor.SafeMemoryMappedViewHandle.AcquirePointer(ref ptr);

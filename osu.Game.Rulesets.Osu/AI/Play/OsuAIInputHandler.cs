@@ -1,10 +1,10 @@
 // Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
-using System;
 using System.Collections.Generic;
 using osu.Game.Input.Handlers;
 using osu.Framework.Input.StateChanges;
+using osu.Framework.Logging;
 
 
 namespace osu.Game.Rulesets.Osu.AI.Play
@@ -16,12 +16,11 @@ namespace osu.Game.Rulesets.Osu.AI.Play
 
         private readonly SharedActionReader memory;
 
-        private Random random;
 
         public OsuAIInputHandler(SharedActionReader memory)
         {
+            Logger.Log("Input Handler Created");
             this.memory = memory;
-            random = new();
         }
 
         public override bool IsActive => true;

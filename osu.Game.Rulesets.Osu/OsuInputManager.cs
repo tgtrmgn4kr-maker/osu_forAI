@@ -13,13 +13,14 @@ using osu.Game.Rulesets.Osu.Objects.Drawables;
 using osu.Game.Rulesets.Osu.UI;
 using osu.Game.Rulesets.UI;
 using osuTK;
+using System.Collections.Generic;
+using osu.Framework.Input.States;
 
 namespace osu.Game.Rulesets.Osu
 {
     public partial class OsuInputManager : RulesetInputManager<OsuAction>
     {
         public SlimReadOnlyListWrapper<OsuAction> PressedActions => KeyBindingContainer.PressedActions;
-
 
         /// <summary>
         /// Whether gameplay input buttons should be allowed.
@@ -68,7 +69,7 @@ namespace osu.Game.Rulesets.Osu
             return base.Handle(e);
         }
 
-        private partial class OsuKeyBindingContainer : RulesetKeyBindingContainer
+        public partial class OsuKeyBindingContainer : RulesetKeyBindingContainer
         {
             private bool allowGameplayInputs = true;
 
@@ -89,6 +90,8 @@ namespace osu.Game.Rulesets.Osu
                 }
             }
 
+            public OsuAction OsuAction;
+
             public OsuKeyBindingContainer(RulesetInfo ruleset, int variant, SimultaneousBindingMode unique)
                 : base(ruleset, variant, unique)
             {
@@ -100,6 +103,16 @@ namespace osu.Game.Rulesets.Osu
 
                 if (!AllowGameplayInputs)
                     KeyBindings = KeyBindings.Where(static b => b.GetAction<OsuAction>() == OsuAction.Smoke).ToList();
+            }
+
+            protected override Drawable PropagatePressed(IEnumerable<Drawable> drawables, InputState state, OsuAction pressed, float scrollAmount = 0, bool isPrecise = false, bool repeat = false)
+            {
+                return base.PropagatePressed(drawables, state, pressed, scrollAmount, isPrecise, repeat);
+            }
+
+            protected override void PropagateReleased(IEnumerable<Drawable> drawables, InputState state, OsuAction released)
+            {
+                base.PropagateReleased(drawables, state, released);
             }
         }
     }

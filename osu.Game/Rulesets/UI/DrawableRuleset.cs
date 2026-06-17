@@ -16,6 +16,7 @@ using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Cursor;
 using osu.Framework.Input;
 using osu.Framework.Input.Events;
+using osu.Game.AI;
 using osu.Game.Beatmaps;
 using osu.Game.Configuration;
 using osu.Game.Graphics.Cursor;
@@ -326,12 +327,12 @@ namespace osu.Game.Rulesets.UI
             }
         }
 
-        public override void SetAIHandler()
+        public override void SetAIHandler(PlayingStateContainer playingStateContainer)
         {
             if (KeyBindingInputManager is not IHasAIHandler aIInputManager)
                 throw new InvalidOperationException($"A {nameof(KeyBindingInputManager)} which supports AI play loading is not available");
 
-            var handler = CreateAIInputHandler();
+            var handler = CreateAIInputHandler(playingStateContainer);
 
             aIInputManager.AIInputHandler = handler;
 
@@ -368,7 +369,7 @@ namespace osu.Game.Rulesets.UI
 
         protected virtual ReplayInputHandler CreateReplayInputHandler(Replay replay) => null;
 
-        protected virtual AIInputHandler CreateAIInputHandler() => null;
+        protected virtual AIInputHandler CreateAIInputHandler(PlayingStateContainer playingStateContainer) => null;
 
         protected virtual ReplayRecorder CreateReplayRecorder(Score score) => null;
 
@@ -592,7 +593,7 @@ namespace osu.Game.Rulesets.UI
         /// Sets a AI input to be used, overriding local input.
         /// </summary>
 
-        public abstract void SetAIHandler();
+        public abstract void SetAIHandler(PlayingStateContainer playingStateContainer);
 
         /// <summary>
         /// Sets a replay to be used to record gameplay.

@@ -21,6 +21,7 @@ using osu.Game.Screens.Edit;
 using osu.Game.Screens.Play;
 using osu.Game.Users;
 using osu.Game.Utils;
+using osu.Game.AI;
 using WebCommonStrings = osu.Game.Resources.Localisation.Web.CommonStrings;
 
 namespace osu.Game.Screens.Select
@@ -52,10 +53,13 @@ namespace osu.Game.Screens.Select
 
         private Sample? sampleConfirmSelection { get; set; }
 
+        private PlayingStateContainer? playingStateContainer;
+
         [BackgroundDependencyLoader]
         private void load(AudioManager audio)
         {
             sampleConfirmSelection = audio.Samples.Get(@"SongSelect/confirm-selection");
+            playingStateContainer = new();
 
             AddInternal(new SongSelectTouchInputDetector());
         }
@@ -140,7 +144,8 @@ namespace osu.Game.Screens.Select
                 }
                 else
                 {
-                    player = new AIPlayer();
+                    //player = new AIPlayer(playingStateContainer!);
+                    player = new SoloPlayer();
                 }
 
                 return player;

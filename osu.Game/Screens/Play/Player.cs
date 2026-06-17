@@ -1318,5 +1318,6 @@ namespace osu.Game.Screens.Play
         IBindable<bool> ISamplePlaybackDisabler.SamplePlaybackDisabled => samplePlaybackDisabled;
 
         public IBindable<LocalUserPlayingState> PlayingState => playingState;
+        public LocalUserPlayingState LocalUserPlayingState => playingState.Default;
     }
 }
