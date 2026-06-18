@@ -28,6 +28,15 @@ namespace osu.Game.Rulesets.Osu.AI
             public CursorRuntimeData CursorRuntimeData;
             public SliderRuntimeData SliderRuntimeData;
             public SpinnerRuntimeData SpinnerRuntimeData;
+            public FrameObservation()
+            {
+                PlayingState = 0;
+                FrameID = 0;
+                CurrentTime = 0;
+                CursorRuntimeData = new();
+                SliderRuntimeData = new();
+                SpinnerRuntimeData = new();
+            }
         }
 
         // HitCircle and SliderHead
@@ -41,6 +50,16 @@ namespace osu.Game.Rulesets.Osu.AI
             public float DistanceToCursorY;
             public float ScalarDistance;
             public double TimeToHit;
+            public OsuObjectsData()
+            {
+                IsCircle = 0;
+                IsSlider = 0;
+                IsSpinner = 0;
+                DistanceToCursorX = -1;
+                DistanceToCursorY = -1;
+                ScalarDistance = -1;
+                TimeToHit = -1;
+            }
         }
 
         // SliderBall only
@@ -56,7 +75,13 @@ namespace osu.Game.Rulesets.Osu.AI
             public float DirectionY;
             public SliderRuntimeData()
             {
+                DistanceToCursorX = -1;
+                DistanceToCursorY = -1;
+                ScalarDistance = -1;
+                Velocity = 0;
                 Progress = -1;
+                DirectionX = 0;
+                DirectionY = 0;
             }
         }
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -68,7 +93,10 @@ namespace osu.Game.Rulesets.Osu.AI
             public double RemainingTime;
             public SpinnerRuntimeData()
             {
+                SpinsPerMinute = -1;
+                RequiredSPM = -1;
                 Progress = -1;
+                RemainingTime = -1;
             }
         }
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -78,6 +106,13 @@ namespace osu.Game.Rulesets.Osu.AI
             public float Y;
             public double VelocityX;
             public double VelocityY;
+            public CursorRuntimeData()
+            {
+                X = 0;
+                Y = 0;
+                VelocityX = 0;
+                VelocityY = 0;
+            }
         }
         private Dictionary<Type, int> objectType = new()
         {
@@ -97,7 +132,7 @@ namespace osu.Game.Rulesets.Osu.AI
         private OsuPlayfield.AIPlayfield? playfield;
         private FrameObservation frameObservation;
 
-        public OsuObjectsData[] GetData { get; private set; }
+        public OsuObjectsData[] GetData;
         public FrameObservation GetFrameObservation => frameObservation;
         private int count;
         private double previousTime;

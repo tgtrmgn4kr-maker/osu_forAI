@@ -40,8 +40,8 @@ namespace osu.Game.Rulesets.Osu.UI
 
         private OsuPlayfield.AIPlayfield aIPlayfield = null!;
 
-        private ObjectTracker? objectTracker = null;
-        private RewardTracker? rewardTracker = null;
+        private ObjectTracker objectTracker = null!;
+        private RewardTracker rewardTracker = null!;
         private SharedTrackerState? sharedState = null;
         private SharedActionReader? actionReader = null;
         private PlayingStateContainer? playingStateContainer = null;
@@ -56,18 +56,30 @@ namespace osu.Game.Rulesets.Osu.UI
         public DrawableOsuRuleset(Ruleset ruleset, IBeatmap beatmap, IReadOnlyList<Mod>? mods = null)
             : base(ruleset, beatmap, mods)
         {
+            Logger.Log("DrawableOsuRuleset Ready");
         }
+
+        /*
+        Loading order
+        0. DrawableRuleset
+        1. Input Manager
+        2. Load()
+        3. Replay Recorder
+        */
 
         [BackgroundDependencyLoader]
         private void load(ReplayPlayer? replayPlayer)
         {
+            Logger.Log("Load Ready");
             sharedState = new();
             actionReader = new();
             playingStateContainer = new();
             objectTracker = new ObjectTracker(aIPlayfield, playingStateContainer!);
+            Logger.Log($"Load objectTracker: {objectTracker.GetHashCode()}");
             rewardTracker = new RewardTracker(aIPlayfield, sharedState);
+            Logger.Log($"Load reward: {rewardTracker.GetHashCode()}");
             //observationWriter = new ObservationWriter(objectTracker, rewardTracker);
-            humanPlayRecorder = new HumanPlayRecorder(objectTracker, rewardTracker, osuReplayRecorder!);
+
 
             if (replayPlayer != null)
             {
@@ -95,7 +107,11 @@ namespace osu.Game.Rulesets.Osu.UI
             return aIPlayfield;
         }
 
-        protected override PassThroughInputManager CreateInputManager() => new OsuInputManager(Ruleset.RulesetInfo);
+        protected override PassThroughInputManager CreateInputManager()
+        {
+            Logger.Log("InputManager Ready");
+            return new OsuInputManager(Ruleset.RulesetInfo);
+        }
 
 
         public override PlayfieldAdjustmentContainer CreatePlayfieldAdjustmentContainer() => new OsuPlayfieldAdjustmentContainer { AlignWithStoryboard = true };
@@ -112,20 +128,23 @@ namespace osu.Game.Rulesets.Osu.UI
         {
             base.Update();
 
-            // Make sure both trackers get the same frame ID
             long frameID = aIPlayfield.FrameID;
             objectTracker!.Update(frameID);
             rewardTracker!.Update();
 
             // When both `objectTracker` and `rewardTracker` have done their `Update()`
             //observationWriter!.Write();
-
             humanPlayRecorder!.WriteData();
+
         }
-        protected override ReplayInputHandler CreateReplayInputHandler(Replay replay) => new OsuFramedReplayInputHandler(replay);
+        protected override ReplayInputHandler CreateReplayInputHandler(Replay replay)
+        {
+            Logger.Log("ReplayInputHandler ready");
+            return new OsuFramedReplayInputHandler(replay);
+        }
 
 
-        // For AI Player
+        // For AI Player (It's not used now)
         protected override AIInputHandler CreateAIInputHandler(PlayingStateContainer playingStateContainer)
         {
             Logger.Log($"AIInputHandler Created");
@@ -135,10 +154,15 @@ namespace osu.Game.Rulesets.Osu.UI
             objectTracker = new ObjectTracker(aIPlayfield, playingStateContainer);
             observationWriter = new ObservationWriter(objectTracker, rewardTracker!);
             return new OsuAIInputHandler(actionReader!);
-
         }
 
-        protected override ReplayRecorder CreateReplayRecorder(Score score) => new OsuReplayRecorder(score);
+        protected override ReplayRecorder CreateReplayRecorder(Score score)
+        {
+            Logger.Log("ReplayRecorder Ready");
+            osuReplayRecorder = new OsuReplayRecorder(score);
+            humanPlayRecorder = new HumanPlayRecorder(objectTracker, rewardTracker, osuReplayRecorder);
+            return osuReplayRecorder;
+        }
 
         public override double GameplayStartTime
         {
@@ -154,7 +178,7 @@ namespace osu.Game.Rulesets.Osu.UI
         protected override void Dispose(bool isDisposing)
         {
             //observationWriter!.Dispose();
-            humanPlayRecorder!.Close();
+            humanPlayRecorder!.Dispose();
             base.Dispose(isDisposing);
         }
 

@@ -1,37 +1,75 @@
 // Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using System;
 using System.IO;
+using System.Runtime.InteropServices;
+using osu.Framework.Logging;
 using osu.Game.Rulesets.Osu.UI;
 
 namespace osu.Game.Rulesets.Osu.AI.Learn
 {
-    public class HumanPlayRecorder
+    public unsafe class HumanPlayRecorder : IDisposable
     {
-        public FileStream F;
+        private FileStream fs;
+        private BinaryWriter writer;
+        private OsuReplayRecorder osuReplayRecorder;
         private ObjectTracker objectTracker;
         private RewardTracker rewardTracker;
-        private OsuReplayRecorder osuReplayRecorder;
+        private string filePath = @"D:\Programming\Data\OsuTrainingData.bin";
 
         public HumanPlayRecorder(ObjectTracker objectTracker, RewardTracker rewardTracker, OsuReplayRecorder osuReplayRecorder)
         {
-            F = new(@"D:\Programming\Data\TrainingData.txt", FileMode.OpenOrCreate, FileAccess.Write, FileShare.ReadWrite);
+            Logger.Log($"Recorder Get objectTracker: {objectTracker.GetHashCode()}");
+            Logger.Log($"Recorder Get rewardTracker: {rewardTracker.GetHashCode()}");
             this.objectTracker = objectTracker;
             this.rewardTracker = rewardTracker;
             this.osuReplayRecorder = osuReplayRecorder;
+            fs = new FileStream(filePath, FileMode.Append, FileAccess.Write, FileShare.None, 4096 * 1024);
+            writer = new BinaryWriter(fs);
         }
+
+        public void WriteStructIntoByte<T>(ref T structure) where T : unmanaged
+        {
+            int size = Marshal.SizeOf<T>();
+
+            fixed (T* structPtr = &structure)
+            {
+                var span = new ReadOnlySpan<byte>(structPtr, size);
+                fs.Write(span);
+            }
+        }
+
 
         public void WriteData()
         {
-            F.Seek(0, SeekOrigin.End);
-            byte[] data = System.Text.Encoding.ASCII.GetBytes($"");
-            F.Write(data, 0, data.Length);
-        }
+            var frameObservation =
+                objectTracker.GetFrameObservation;
 
-        public void Close()
+            var objectData =
+                objectTracker.GetData;
+
+            var rewardEvent =
+                rewardTracker.GetRewards;
+
+            WriteStructIntoByte(ref frameObservation);
+
+            for (int i = 0; i < objectData.Length; i++)
+            {
+                WriteStructIntoByte(ref objectData[i]);
+            }
+
+            for (int i = 0; i < rewardEvent.Length; i++)
+            {
+                WriteStructIntoByte(ref rewardEvent[i]);
+            }
+
+            writer.Write(osuReplayRecorder.GetHitButton);
+        }
+        public void Dispose()
         {
-            F.Close();
+            writer?.Dispose();
+            fs?.Dispose();
         }
-
     }
 }

@@ -82,7 +82,7 @@ namespace osu.Game.Rulesets.Osu.AI
 
             eventID = 0;
             rewardCount = 0;
-            GetRewards = new RewardEvent[5];
+            GetRewards = new RewardEvent[10];
         }
 
         internal void CollectObjects(DrawableHitObject obj)
