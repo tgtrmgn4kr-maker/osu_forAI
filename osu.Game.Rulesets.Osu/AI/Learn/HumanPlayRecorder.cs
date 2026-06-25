@@ -40,7 +40,10 @@ namespace osu.Game.Rulesets.Osu.AI.Learn
             }
         }
 
-
+        /// <summary>
+        /// One frame observation, ten object data, ten reward,
+        /// and one osu hit button will be written per frame
+        /// </summary>
         public void WriteData()
         {
             var frameObservation =
@@ -65,6 +68,7 @@ namespace osu.Game.Rulesets.Osu.AI.Learn
             }
 
             writer.Write(osuReplayRecorder.GetHitButton);
+            Logger.Log($"Hit: {osuReplayRecorder.GetHitButton}");
         }
         public void Dispose()
         {

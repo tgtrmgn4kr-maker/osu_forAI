@@ -24,6 +24,14 @@ namespace osu.Game.Rulesets.Osu.AI
             public int ResultType;
             public double TimeOffset;
             public bool Failed;
+            public RewardEvent()
+            {
+                EventID = -1;
+                ObjectType = 0;
+                ResultType = 0;
+                TimeOffset = -1;
+                Failed = false;
+            }
         }
         private Dictionary<Type, int> objectType = new()
         {
@@ -87,7 +95,9 @@ namespace osu.Game.Rulesets.Osu.AI
 
         internal void CollectObjects(DrawableHitObject obj)
         {
-            if (!state.SubscribedObjects.Contains(obj.HitObject) && !state.SubscribedInt.Contains(obj.GetHashCode()) && !state.SubscribedInt.Contains(obj.HitObject.GetHashCode()))
+            if (!state.SubscribedObjects.Contains(obj.HitObject)
+                && !state.SubscribedInt.Contains(obj.GetHashCode())
+                && !state.SubscribedInt.Contains(obj.HitObject.GetHashCode()))
             {
                 obj.OnNewResult += ScoreGetter;
                 state.SubscribedObjects.Add(obj.HitObject);
@@ -115,6 +125,7 @@ namespace osu.Game.Rulesets.Osu.AI
         }
         public void Update()
         {
+            // Every frame has its own reward
             GetRewards = new RewardEvent[10];
             rewardCount = 0;
         }

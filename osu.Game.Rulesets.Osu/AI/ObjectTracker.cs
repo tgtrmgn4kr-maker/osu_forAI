@@ -28,7 +28,7 @@ namespace osu.Game.Rulesets.Osu.AI
             public CursorRuntimeData CursorRuntimeData;
             public SliderRuntimeData SliderRuntimeData;
             public SpinnerRuntimeData SpinnerRuntimeData;
-            public FrameObservation()
+            public FrameObservation() // Prevent from uninitialised when being written in memory or file
             {
                 PlayingState = 0;
                 FrameID = 0;
@@ -43,6 +43,7 @@ namespace osu.Game.Rulesets.Osu.AI
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct OsuObjectsData
         {
+            // One hot encoding
             public byte IsCircle;
             public byte IsSlider;
             public byte IsSpinner;
