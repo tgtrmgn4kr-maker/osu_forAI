@@ -129,7 +129,7 @@ namespace osu.Game.Rulesets.Osu.UI
 
             long frameID = aIPlayfield.FrameID;
             objectTracker!.Update(frameID);
-            rewardTracker!.Update();
+            //rewardTracker!.Update();
 
             // When both `objectTracker` and `rewardTracker` have done their `Update()`
             //observationWriter!.Write();

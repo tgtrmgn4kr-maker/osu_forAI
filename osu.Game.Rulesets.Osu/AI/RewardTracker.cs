@@ -106,6 +106,8 @@ namespace osu.Game.Rulesets.Osu.AI
         }
         public void ScoreGetter(DrawableHitObject obj, JudgementResult result)
         {
+            // Prevent from duplicated triggering of this function
+            obj.OnNewResult -= ScoreGetter;
 
             rewardEvent = new()
             {
@@ -117,9 +119,9 @@ namespace osu.Game.Rulesets.Osu.AI
             };
 
             eventID++;
-            Logger.Log($"Object Judged: {obj.HitObject.GetHashCode()}");
-            Logger.Log($"Stored reward: EventID={rewardEvent.EventID}, ResultType={rewardEvent.ResultType}");
+
             GetRewards[rewardCount] = rewardEvent;
+            Logger.Log($"TimeOffset: {GetRewards[rewardCount].TimeOffset}");
             rewardCount++;
 
         }
@@ -128,10 +130,6 @@ namespace osu.Game.Rulesets.Osu.AI
             // Clear the array
             GetRewards = new RewardEvent[10];
             rewardCount = 0;
-        }
-        public void Clear()
-        {
-
         }
     }
 }

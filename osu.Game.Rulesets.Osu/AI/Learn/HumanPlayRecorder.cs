@@ -5,7 +5,6 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
-using osu.Framework.Logging;
 using osu.Game.Rulesets.Osu.UI;
 
 namespace osu.Game.Rulesets.Osu.AI.Learn
@@ -56,18 +55,18 @@ namespace osu.Game.Rulesets.Osu.AI.Learn
             {
                 WriteStructIntoByte(ref objectData[i]);
             }
-            Logger.Log($"Write TimeToHit: {objectData[0].TimeToHit}");
 
             for (int i = 0; i < 10; i++)
             {
                 WriteStructIntoByte(ref rewardEvents[i]);
             }
 
-
             writer.Write(osuReplayRecorder.GetHitButton);
-            Logger.Log($"Hit: {osuReplayRecorder.GetHitButton}");
+
             writer.Write(Encoding.ASCII.GetBytes("End of a frame."));
 
+            // When a frame has been written, clear the reward for the next frame.
+            rewardTracker.Update();
         }
         public void Dispose()
         {
