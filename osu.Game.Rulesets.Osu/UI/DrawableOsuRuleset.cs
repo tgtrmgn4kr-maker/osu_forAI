@@ -75,9 +75,8 @@ namespace osu.Game.Rulesets.Osu.UI
             actionReader = new();
             playingStateContainer = new();
             objectTracker = new ObjectTracker(aIPlayfield, playingStateContainer!);
-            Logger.Log($"Load objectTracker: {objectTracker.GetHashCode()}");
             rewardTracker = new RewardTracker(aIPlayfield, sharedState);
-            Logger.Log($"Load reward: {rewardTracker.GetHashCode()}");
+
             //observationWriter = new ObservationWriter(objectTracker, rewardTracker);
 
 
@@ -134,7 +133,7 @@ namespace osu.Game.Rulesets.Osu.UI
 
             // When both `objectTracker` and `rewardTracker` have done their `Update()`
             //observationWriter!.Write();
-            humanPlayRecorder!.WriteData();
+            humanPlayRecorder!.WriteData(frameID);
 
         }
         protected override ReplayInputHandler CreateReplayInputHandler(Replay replay)

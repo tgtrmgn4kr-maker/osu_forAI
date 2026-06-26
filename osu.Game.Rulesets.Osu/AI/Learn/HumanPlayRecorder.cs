@@ -4,6 +4,7 @@
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Text;
 using osu.Framework.Logging;
 using osu.Game.Rulesets.Osu.UI;
 
@@ -20,8 +21,6 @@ namespace osu.Game.Rulesets.Osu.AI.Learn
 
         public HumanPlayRecorder(ObjectTracker objectTracker, RewardTracker rewardTracker, OsuReplayRecorder osuReplayRecorder)
         {
-            Logger.Log($"Recorder Get objectTracker: {objectTracker.GetHashCode()}");
-            Logger.Log($"Recorder Get rewardTracker: {rewardTracker.GetHashCode()}");
             this.objectTracker = objectTracker;
             this.rewardTracker = rewardTracker;
             this.osuReplayRecorder = osuReplayRecorder;
@@ -40,11 +39,7 @@ namespace osu.Game.Rulesets.Osu.AI.Learn
             }
         }
 
-        /// <summary>
-        /// One frame observation, ten object data, ten reward,
-        /// and one osu hit button will be written per frame
-        /// </summary>
-        public void WriteData()
+        public void WriteData(long frameID)
         {
             var frameObservation =
                 objectTracker.GetFrameObservation;
@@ -52,23 +47,27 @@ namespace osu.Game.Rulesets.Osu.AI.Learn
             var objectData =
                 objectTracker.GetData;
 
-            var rewardEvent =
+            var rewardEvents =
                 rewardTracker.GetRewards;
 
             WriteStructIntoByte(ref frameObservation);
 
-            for (int i = 0; i < objectData.Length; i++)
+            for (int i = 0; i < 10; i++)
             {
                 WriteStructIntoByte(ref objectData[i]);
             }
+            Logger.Log($"Write TimeToHit: {objectData[0].TimeToHit}");
 
-            for (int i = 0; i < rewardEvent.Length; i++)
+            for (int i = 0; i < 10; i++)
             {
-                WriteStructIntoByte(ref rewardEvent[i]);
+                WriteStructIntoByte(ref rewardEvents[i]);
             }
+
 
             writer.Write(osuReplayRecorder.GetHitButton);
             Logger.Log($"Hit: {osuReplayRecorder.GetHitButton}");
+            writer.Write(Encoding.ASCII.GetBytes("End of a frame."));
+
         }
         public void Dispose()
         {

@@ -10,7 +10,6 @@ using osuTK;
 using osu.Game.Rulesets.Osu.Objects;
 using osu.Game.Rulesets.Objects.Types;
 using System.Runtime.InteropServices;
-using osu.Framework.Logging;
 using osu.Game.AI;
 
 
@@ -150,7 +149,6 @@ namespace osu.Game.Rulesets.Osu.AI
             previousCursorX = playfield!.CursorPosition.X;
             previousCursorY = playfield!.CursorPosition.Y;
             GetData = new OsuObjectsData[10];
-            Logger.Log($"State: {playingStateContainer.LocalUserPlayingState}");
         }
 
         private void getNext10Objects()
@@ -178,7 +176,8 @@ namespace osu.Game.Rulesets.Osu.AI
                 // All the data is normalised
                 OsuObjectsData data = new();
                 int objTypeInt = objectType[obj.GetType()];
-                if (objTypeInt == 0) // HitCircle
+                //Logger.Log($"objTypeInt: {objTypeInt}");
+                if (objTypeInt == 1) // HitCircle
                 {
                     data.IsCircle = 1;
                     // Make sure that the position is relative position
@@ -190,9 +189,10 @@ namespace osu.Game.Rulesets.Osu.AI
                     data.ScalarDistance = (float)Math.Sqrt(Math.Pow(data.DistanceToCursorX, 2f) + Math.Pow(data.DistanceToCursorY, 2f));
 
                     double TimeToHit = obj.HitObject.StartTime - playfield!.CurrentTime;
+                    //Logger.Log($"HitTime: {TimeToHit}");
                     data.TimeToHit = TimeToHit / 1000f;
                 }
-                else if (objTypeInt == 3) // Slider
+                else if (objTypeInt == 4) // Slider
                 {
                     data.IsSlider = 1;
                     var slider = (DrawableSlider)obj;
@@ -204,9 +204,10 @@ namespace osu.Game.Rulesets.Osu.AI
                     data.ScalarDistance = (float)Math.Sqrt(Math.Pow(data.DistanceToCursorX, 2f) + Math.Pow(data.DistanceToCursorY, 2f));
 
                     double TimeToHit = obj.HitObject.StartTime - playfield!.CurrentTime;
+                    //Logger.Log($"HitTime: {TimeToHit}");
                     data.TimeToHit = TimeToHit / 1000f;
                 }
-                else if (objTypeInt == 6) // Spinner
+                else if (objTypeInt == 7) // Spinner
                 {
                     data.IsSpinner = 1;
                     // There is no need to calculate the position of a spinner
@@ -215,6 +216,7 @@ namespace osu.Game.Rulesets.Osu.AI
                 }
 
                 GetData[count] = data;
+
                 count++;
             }
         }

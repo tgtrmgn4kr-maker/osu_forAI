@@ -23,14 +23,14 @@ namespace osu.Game.Rulesets.Osu.AI
             public int ObjectType;
             public int ResultType;
             public double TimeOffset;
-            public bool Failed;
+            public byte Failed;
             public RewardEvent()
             {
                 EventID = -1;
                 ObjectType = 0;
                 ResultType = 0;
                 TimeOffset = -1;
-                Failed = false;
+                Failed = 0;
             }
         }
         private Dictionary<Type, int> objectType = new()
@@ -96,17 +96,16 @@ namespace osu.Game.Rulesets.Osu.AI
         internal void CollectObjects(DrawableHitObject obj)
         {
             if (!state.SubscribedObjects.Contains(obj.HitObject)
-                && !state.SubscribedInt.Contains(obj.GetHashCode())
                 && !state.SubscribedInt.Contains(obj.HitObject.GetHashCode()))
             {
                 obj.OnNewResult += ScoreGetter;
                 state.SubscribedObjects.Add(obj.HitObject);
                 state.SubscribedInt.Add(obj.HitObject.GetHashCode());
+                Logger.Log($"Object subscribed: {obj.HitObject.GetHashCode()}");
             }
         }
         public void ScoreGetter(DrawableHitObject obj, JudgementResult result)
         {
-            obj.OnNewResult -= ScoreGetter;
 
             rewardEvent = new()
             {
@@ -114,20 +113,25 @@ namespace osu.Game.Rulesets.Osu.AI
                 ResultType = scoreConverter[result.Type],
                 TimeOffset = result.TimeOffset,
                 EventID = eventID,
-                Failed = result.FailedAtJudgement
+                Failed = (byte)(result.FailedAtJudgement ? 1 : 0),
             };
 
             eventID++;
-            Logger.Log($"Failed {rewardEvent.Failed}");
+            Logger.Log($"Object Judged: {obj.HitObject.GetHashCode()}");
+            Logger.Log($"Stored reward: EventID={rewardEvent.EventID}, ResultType={rewardEvent.ResultType}");
             GetRewards[rewardCount] = rewardEvent;
             rewardCount++;
 
         }
         public void Update()
         {
-            // Every frame has its own reward
+            // Clear the array
             GetRewards = new RewardEvent[10];
             rewardCount = 0;
+        }
+        public void Clear()
+        {
+
         }
     }
 }
