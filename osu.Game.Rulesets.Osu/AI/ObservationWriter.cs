@@ -63,7 +63,7 @@ namespace osu.Game.Rulesets.Osu.AI
                 ptr += Marshal.SizeOf<ObjectTracker.OsuObjectsData>();
             }
 
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 10; i++)
             {
                 *(RewardTracker.RewardEvent*)ptr = rewardTracker.GetRewards[i];
                 ptr += Marshal.SizeOf<RewardTracker.RewardEvent>();

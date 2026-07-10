@@ -48,6 +48,7 @@ namespace osu.Game.Rulesets.Osu.UI
         private ObservationWriter? observationWriter = null;
         private OsuReplayRecorder? osuReplayRecorder = null;
         private HumanPlayRecorder? humanPlayRecorder = null;
+        private bool isAIPlaying;
 
 
 
@@ -57,6 +58,7 @@ namespace osu.Game.Rulesets.Osu.UI
             : base(ruleset, beatmap, mods)
         {
             Logger.Log("DrawableOsuRuleset Ready");
+            isAIPlaying = true;
         }
 
         /*
@@ -129,11 +131,13 @@ namespace osu.Game.Rulesets.Osu.UI
 
             long frameID = aIPlayfield.FrameID;
             objectTracker!.Update(frameID);
-            //rewardTracker!.Update();
+
 
             // When both `objectTracker` and `rewardTracker` have done their `Update()`
-            //observationWriter!.Write();
-            humanPlayRecorder!.WriteData(frameID);
+            observationWriter!.Write();
+
+            rewardTracker!.Update();
+            //humanPlayRecorder!.WriteData(frameID);
 
         }
         protected override ReplayInputHandler CreateReplayInputHandler(Replay replay)
@@ -143,7 +147,7 @@ namespace osu.Game.Rulesets.Osu.UI
         }
 
 
-        // For AI Player (It's not used now)
+        // Activating only when AIPlayer is activated
         protected override AIInputHandler CreateAIInputHandler(PlayingStateContainer playingStateContainer)
         {
             Logger.Log($"AIInputHandler Created");
@@ -157,9 +161,13 @@ namespace osu.Game.Rulesets.Osu.UI
 
         protected override ReplayRecorder CreateReplayRecorder(Score score)
         {
+
             Logger.Log("ReplayRecorder Ready");
             osuReplayRecorder = new OsuReplayRecorder(score);
-            humanPlayRecorder = new HumanPlayRecorder(objectTracker, rewardTracker, osuReplayRecorder);
+
+            if (!isAIPlaying)
+                humanPlayRecorder = new HumanPlayRecorder(objectTracker, rewardTracker, osuReplayRecorder);
+
             return osuReplayRecorder;
         }
 
@@ -176,8 +184,9 @@ namespace osu.Game.Rulesets.Osu.UI
 
         protected override void Dispose(bool isDisposing)
         {
-            //observationWriter!.Dispose();
-            humanPlayRecorder!.Dispose();
+            observationWriter!.Dispose();
+
+            //humanPlayRecorder!.Dispose();
             base.Dispose(isDisposing);
         }
 
