@@ -45,6 +45,8 @@ namespace osu.Game.Screens.Play
 
         private double? lastFrameTime;
 
+        private double userPlaybackRateBeforeFastForward;
+
         private ReplayFailIndicator? failIndicator;
         private PlaybackSettings? playbackSettings;
 
@@ -194,6 +196,13 @@ namespace osu.Game.Screens.Play
                     else
                         GameplayClockContainer.Stop();
                     return true;
+
+                case GlobalAction.FastForwardReplay:
+                    if (e.Repeat) return false;
+
+                    userPlaybackRateBeforeFastForward = playbackSettings!.UserPlaybackRate.Value;
+                    playbackSettings!.UserPlaybackRate.Value *= 2;
+                    return true;
             }
 
             return false;
@@ -223,6 +232,12 @@ namespace osu.Game.Screens.Play
 
         public void OnReleased(KeyBindingReleaseEvent<GlobalAction> e)
         {
+            switch (e.Action)
+            {
+                case GlobalAction.FastForwardReplay:
+                    playbackSettings!.UserPlaybackRate.Value = userPlaybackRateBeforeFastForward;
+                    return;
+            }
         }
 
         protected override void PerformFail()
