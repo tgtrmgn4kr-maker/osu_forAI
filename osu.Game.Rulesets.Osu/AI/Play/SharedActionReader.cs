@@ -57,8 +57,8 @@ namespace osu.Game.Rulesets.Osu.AI.Play
             return new OsuActionData
             {
                 CursorPosition = new Vector2(
-                    actionData.CursorX * 256 + 256,
-                    actionData.CursorY * 192 + 192
+                    Math.Clamp(actionData.CursorX * 256 + 256, 0, 512),
+                    Math.Clamp(actionData.CursorY * 192 + 192, 0, 384)
                 ),
                 OsuActions = action
             };
