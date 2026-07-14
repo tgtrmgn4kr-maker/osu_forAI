@@ -177,7 +177,7 @@ namespace osu.Game.Rulesets.Osu.UI
 
         protected override void Dispose(bool isDisposing)
         {
-            humanPlayRecorder!.Dispose();
+            humanPlayRecorder?.Dispose();
             base.Dispose(isDisposing);
         }
 
