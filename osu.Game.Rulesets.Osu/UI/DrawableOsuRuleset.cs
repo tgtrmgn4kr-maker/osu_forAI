@@ -48,7 +48,6 @@ namespace osu.Game.Rulesets.Osu.UI
         private ObservationWriter? observationWriter = null;
         private OsuReplayRecorder? osuReplayRecorder = null;
         private HumanPlayRecorder? humanPlayRecorder = null;
-        private bool isAIPlaying;
 
 
 
@@ -58,7 +57,6 @@ namespace osu.Game.Rulesets.Osu.UI
             : base(ruleset, beatmap, mods)
         {
             Logger.Log("DrawableOsuRuleset Ready");
-            isAIPlaying = true;
         }
 
         /*
@@ -132,13 +130,8 @@ namespace osu.Game.Rulesets.Osu.UI
             long frameID = aIPlayfield.FrameID;
             objectTracker!.Update(frameID);
 
-
-            // When both `objectTracker` and `rewardTracker` have done their `Update()`
-            observationWriter!.Write();
-
-            rewardTracker!.Update();
-            //humanPlayRecorder!.WriteData(frameID);
-
+            humanPlayRecorder!.WriteData(frameID);
+            rewardTracker!.Clear();
         }
         protected override ReplayInputHandler CreateReplayInputHandler(Replay replay)
         {
@@ -165,8 +158,8 @@ namespace osu.Game.Rulesets.Osu.UI
             Logger.Log("ReplayRecorder Ready");
             osuReplayRecorder = new OsuReplayRecorder(score);
 
-            if (!isAIPlaying)
-                humanPlayRecorder = new HumanPlayRecorder(objectTracker, rewardTracker, osuReplayRecorder);
+
+            humanPlayRecorder = new HumanPlayRecorder(objectTracker, rewardTracker, osuReplayRecorder);
 
             return osuReplayRecorder;
         }
@@ -184,9 +177,7 @@ namespace osu.Game.Rulesets.Osu.UI
 
         protected override void Dispose(bool isDisposing)
         {
-            observationWriter!.Dispose();
-
-            //humanPlayRecorder!.Dispose();
+            humanPlayRecorder!.Dispose();
             base.Dispose(isDisposing);
         }
 
