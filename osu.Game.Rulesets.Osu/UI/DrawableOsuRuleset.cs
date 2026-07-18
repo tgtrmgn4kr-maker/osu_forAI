@@ -25,7 +25,6 @@ using osu.Game.Rulesets.Osu.AI;
 using osu.Game.Rulesets.Osu.AI.Play;
 using osu.Framework.Logging;
 using osu.Game.AI;
-using osu.Game.Rulesets.Osu.AI.Learn;
 
 
 namespace osu.Game.Rulesets.Osu.UI
@@ -46,9 +45,6 @@ namespace osu.Game.Rulesets.Osu.UI
         private SharedActionReader? actionReader = null;
         private PlayingStateContainer? playingStateContainer = null;
         private ObservationWriter? observationWriter = null;
-        private OsuReplayRecorder? osuReplayRecorder = null;
-        private HumanPlayRecorder? humanPlayRecorder = null;
-        private bool isAIPlaying;
 
 
 
@@ -58,7 +54,6 @@ namespace osu.Game.Rulesets.Osu.UI
             : base(ruleset, beatmap, mods)
         {
             Logger.Log("DrawableOsuRuleset Ready");
-            isAIPlaying = true;
         }
 
         /*
