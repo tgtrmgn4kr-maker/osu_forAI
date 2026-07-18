@@ -145,7 +145,6 @@ namespace osu.Game.Screens.Select
                 else
                 {
                     player = new AIPlayer(playingStateContainer!);
-                    //player = new SoloPlayer();
                 }
 
                 return player;

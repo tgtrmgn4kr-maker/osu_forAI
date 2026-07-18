@@ -21,6 +21,7 @@ namespace osu.Game.Rulesets.Osu.AI
         private int bufferSizeOfSharedObservation;
         private int bufferSizeOfObjectData;
         private int bufferSizeOfReward;
+        private int bufferSizeOfHitButton;
 
         private MemoryMappedFile mmf;
         private MemoryMappedViewAccessor accessor;
@@ -34,7 +35,11 @@ namespace osu.Game.Rulesets.Osu.AI
             bufferSizeOfObjectData = sizeofOsuObjectData * 10;
             bufferSizeOfReward = sizeOfReward * 5;
 
-            totalSize = bufferSizeOfObjectData + bufferSizeOfReward + bufferSizeOfSharedObservation;
+            totalSize =
+                bufferSizeOfObjectData
+                + bufferSizeOfReward
+                + bufferSizeOfSharedObservation
+                + bufferSizeOfHitButton;
 
             if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 throw new PlatformNotSupportedException();

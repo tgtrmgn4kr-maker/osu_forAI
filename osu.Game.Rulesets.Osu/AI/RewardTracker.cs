@@ -125,7 +125,7 @@ namespace osu.Game.Rulesets.Osu.AI
             rewardCount++;
 
         }
-        public void Update()
+        public void Clear()
         {
             // Clear the array
             GetRewards = new RewardEvent[10];

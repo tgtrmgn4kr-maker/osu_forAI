@@ -64,9 +64,6 @@ namespace osu.Game.Rulesets.Osu.AI.Learn
             writer.Write(osuReplayRecorder.GetHitButton);
 
             writer.Write(Encoding.ASCII.GetBytes("End of a frame."));
-
-            // When a frame has been written, clear the reward for the next frame.
-            rewardTracker.Update();
         }
         public void Dispose()
         {
