@@ -11,6 +11,7 @@ using osu.Game.Rulesets.Osu.Objects;
 using osu.Game.Rulesets.Objects.Types;
 using System.Runtime.InteropServices;
 using osu.Game.AI;
+using osu.Framework.Logging;
 
 
 namespace osu.Game.Rulesets.Osu.AI
@@ -176,7 +177,7 @@ namespace osu.Game.Rulesets.Osu.AI
                 // All the data is normalised
                 OsuObjectsData data = new();
                 int objTypeInt = objectType[obj.GetType()];
-                //Logger.Log($"objTypeInt: {objTypeInt}");
+
                 if (objTypeInt == 1) // HitCircle
                 {
                     data.IsCircle = 1;
@@ -233,7 +234,7 @@ namespace osu.Game.Rulesets.Osu.AI
         private void trackGameState()
         {
             frameObservation.PlayingState = (byte)playingStateContainer.LocalUserPlayingState;
-            //Logger.Log($"Playing State: {frameObservation.PlayingState}");
+            Logger.Log($"Playing State: {frameObservation.PlayingState}");
         }
         private void trackSliderBall()
         {
