@@ -40,7 +40,7 @@ namespace osu.Game.Utils
 #pragma warning restore IDE0001 // Simplify Names
 
         // Manual MIME type resolution to avoid culture variance (ie. https://github.com/ppy/osu/issues/32962)
-        private static string getMimeType(string fileName) => @"taglib/" + Path.GetExtension(fileName).TrimStart('.');
+        private static string getMimeType(string fileName) => @"taglib/" + Path.GetExtension(fileName.ToLowerInvariant()).TrimStart('.');
 
         private class StreamFileAbstraction : File.IFileAbstraction
         {
