@@ -32,7 +32,7 @@ namespace osu.Game.Rulesets.Osu.AI
 
             bufferSizeOfSharedObservation = sizeOfObservation;
             bufferSizeOfObjectData = sizeofOsuObjectData * 10;
-            bufferSizeOfReward = sizeOfReward * 5;
+            bufferSizeOfReward = sizeOfReward * 10;
 
             totalSize =
                 bufferSizeOfObjectData

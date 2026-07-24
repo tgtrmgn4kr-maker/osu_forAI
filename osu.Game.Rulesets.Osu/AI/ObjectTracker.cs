@@ -147,8 +147,8 @@ namespace osu.Game.Rulesets.Osu.AI
             this.playfield = playfield;
             this.playingStateContainer = playingStateContainer;
             // The first frame
-            previousCursorX = playfield!.CursorPosition.X;
-            previousCursorY = playfield!.CursorPosition.Y;
+            previousCursorX = playfield.CursorPosition.X;
+            previousCursorY = playfield.CursorPosition.Y;
             GetData = new OsuObjectsData[10];
         }
 
@@ -289,8 +289,8 @@ namespace osu.Game.Rulesets.Osu.AI
         {
             double dt = (frameObservation.CurrentTime - previousTime) / 1000f;
 
-            frameObservation.CursorRuntimeData.X = (playfield!.CursorPosition.X - 256f) / 256f;
-            frameObservation.CursorRuntimeData.Y = (playfield!.CursorPosition.Y - 192f) / 192f;
+            frameObservation.CursorRuntimeData.X = Math.Clamp((playfield!.CursorPosition.X - 256f) / 256f, -1f, 1f);
+            frameObservation.CursorRuntimeData.Y = Math.Clamp((playfield!.CursorPosition.Y - 192f) / 192f, -1f, 1f);
 
             float dx = frameObservation.CursorRuntimeData.X - previousCursorX;
             float dy = frameObservation.CursorRuntimeData.Y - previousCursorY;
