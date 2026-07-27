@@ -4,7 +4,6 @@
 using System;
 using System.IO.MemoryMappedFiles;
 using System.Runtime.InteropServices;
-using osu.Framework.Logging;
 
 namespace osu.Game.Rulesets.Osu.AI
 {
@@ -77,12 +76,11 @@ namespace osu.Game.Rulesets.Osu.AI
 
         public void Dispose()
         {
-            // Send a end frame
+            // Send a end frame0
             setPointer();
             ObjectTracker.FrameObservation doneFrame = new();
             *(ObjectTracker.FrameObservation*)ptr = doneFrame;
 
-            Logger.Log("Disposed");
             accessor?.Dispose();
             mmf?.Dispose();
         }
