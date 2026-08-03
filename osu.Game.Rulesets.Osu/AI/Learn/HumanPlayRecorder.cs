@@ -17,11 +17,7 @@ namespace osu.Game.Rulesets.Osu.AI.Learn
         private OsuReplayRecorder osuReplayRecorder;
         private ObjectTracker objectTracker;
         private RewardTracker rewardTracker;
-<<<<<<< HEAD
-        private string filePath = @"C:\Users\user\Data\OsuTrainingData.bin";
-=======
         private string filePath = @"D:\Programming\projects\AI Osu!\osu_rl\data\OsuTrainingData.bin";
->>>>>>> 2d720ecbde (Fix the coordinate standardise)
 
         public HumanPlayRecorder(ObjectTracker objectTracker, RewardTracker rewardTracker, OsuReplayRecorder osuReplayRecorder)
         {

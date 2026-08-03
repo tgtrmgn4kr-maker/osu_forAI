@@ -245,8 +245,8 @@ namespace osu.Game.Rulesets.Osu.AI
 
         private void trackGameState()
         {
+            // It works only when AI player is activated
             frameObservation.PlayingState = (byte)playingStateContainer.LocalUserPlayingState;
-            //Logger.Log($"Playing State: {frameObservation.PlayingState}");
         }
         private void trackSliderBall()
         {
