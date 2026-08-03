@@ -196,7 +196,7 @@ namespace osu.Game.Rulesets.Osu.AI
 
                     // Relative Position
                     data.X = position.X / 256f;
-                    data.Y = position.Y / 256f;
+                    data.Y = position.Y / 192f;
                     data.DistanceToCursorX = (position.X - playfield!.CursorPosition.X) / 256f;
                     data.DistanceToCursorY = (position.Y - playfield!.CursorPosition.Y) / 192f;
                     data.ScalarDistance = (float)Math.Sqrt(Math.Pow(data.DistanceToCursorX, 2f) + Math.Pow(data.DistanceToCursorY, 2f));
@@ -211,6 +211,8 @@ namespace osu.Game.Rulesets.Osu.AI
                     Vector2 position = slider.HitObject.StackedPosition;
 
                     // Relative Position
+                    data.X = position.X / 256f;
+                    data.Y = position.Y / 192f;
                     data.DistanceToCursorX = (position.X - playfield!.CursorPosition.X) / 256f;
                     data.DistanceToCursorY = (position.Y - playfield!.CursorPosition.Y) / 192f;
                     data.ScalarDistance = (float)Math.Sqrt(Math.Pow(data.DistanceToCursorX, 2f) + Math.Pow(data.DistanceToCursorY, 2f));
