@@ -244,6 +244,11 @@ namespace osu.Game.Localisation
         /// </summary>
         public static LocalisableString BeatmapsCount(int quantity) => new PluralisableString(new TranslatableString(getKey(@"beatmaps_count"), @"{0} beatmap|{0} beatmaps", quantity), quantity, '|');
 
+        /// <summary>
+        /// "Playing Failed"
+        /// </summary>
+        public static LocalisableString PlayingFailed => new TranslatableString(getKey(@"playing_failed"), @"Playing Failed");
+
         private static string getKey(string key) => $@"{prefix}:{key}";
     }
 }
