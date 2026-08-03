@@ -11,11 +11,7 @@ namespace osu.Game.Rulesets.Osu.AI.Play
 {
     public class OsuAIInputHandler : AIInputHandler
     {
-        protected readonly List<OsuAction> PressedAction = new();
-        public override double? SetFrameFromTime(double time) => time;
-
         private readonly SharedActionReader memory;
-
 
         public OsuAIInputHandler(SharedActionReader memory)
         {
@@ -24,7 +20,7 @@ namespace osu.Game.Rulesets.Osu.AI.Play
         }
 
         public override bool IsActive => true;
-
+        public override double? SetFrameFromTime(double time) => time;
         public sealed override void CollectPendingInputs(List<IInput> inputs)
         {
             base.CollectPendingInputs(inputs);
