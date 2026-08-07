@@ -60,8 +60,8 @@ namespace osu.Game.Rulesets.Osu.AI
                 IsSpinner = 0;
                 X = 0;
                 Y = 0;
-                DistanceToCursorX = -1;
-                DistanceToCursorY = -1;
+                DistanceToCursorX = 0;
+                DistanceToCursorY = 0;
                 ScalarDistance = -1;
                 TimeToHit = -1;
             }
@@ -102,8 +102,8 @@ namespace osu.Game.Rulesets.Osu.AI
             public double RemainingTime;
             public SpinnerRuntimeData()
             {
-                SpinsPerMinute = 0;
-                RequiredSPM = 0;
+                SpinsPerMinute = -1;
+                RequiredSPM = -1;
                 Progress = -1;
                 RemainingTime = -1;
             }
@@ -323,8 +323,8 @@ namespace osu.Game.Rulesets.Osu.AI
                 float dx = frameObservation.CursorRuntimeData.X - previousCursorX;
                 float dy = frameObservation.CursorRuntimeData.Y - previousCursorY;
 
-                frameObservation.CursorRuntimeData.VelocityX = Math.Clamp(dx / dt, -30d, 30d);
-                frameObservation.CursorRuntimeData.VelocityY = Math.Clamp(dy / dt, -30d, 30d);
+                frameObservation.CursorRuntimeData.VelocityX = Math.Clamp(dx / dt, -30f, 30f);
+                frameObservation.CursorRuntimeData.VelocityY = Math.Clamp(dy / dt, -30f, 30f);
             }
 
             previousTime = frameObservation.CurrentTime;

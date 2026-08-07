@@ -5,7 +5,6 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
-using osu.Framework.Logging;
 using osu.Game.Rulesets.Osu.UI;
 
 namespace osu.Game.Rulesets.Osu.AI.Learn
@@ -53,29 +52,15 @@ namespace osu.Game.Rulesets.Osu.AI.Learn
                 rewardTracker.GetRewards;
 
             WriteStructIntoByte(ref frameObservation);
-            if (count % 300 == 0)
-            {
-                Logger.Log($"CursorX: {frameObservation.CursorRuntimeData.X}", LoggingTarget.Information, LogLevel.Important);
-                Logger.Log($"CursorY: {frameObservation.CursorRuntimeData.Y}", LoggingTarget.Information, LogLevel.Important);
-            }
 
             for (int i = 0; i < 10; i++)
             {
                 WriteStructIntoByte(ref objectData[i]);
-                if (count % 300 == 0)
-                {
-                    Logger.Log($"Obj{i} TimeToHit:{objectData[i].TimeToHit}", LoggingTarget.Information, LogLevel.Important);
-                    Logger.Log($"Obj{i} Pos: ({objectData[i].DistanceToCursorX}, {objectData[i].DistanceToCursorY})", LoggingTarget.Information, LogLevel.Important);
-                }
             }
 
             for (int i = 0; i < 10; i++)
             {
                 WriteStructIntoByte(ref rewardEvents[i]);
-                if (count % 300 == 0)
-                {
-                    Logger.Log($"Obj{i} TimeToHit:{rewardEvents[i].TimeOffset}", LoggingTarget.Information, LogLevel.Important);
-                }
             }
 
             writer.Write(osuReplayRecorder.GetHitButton);

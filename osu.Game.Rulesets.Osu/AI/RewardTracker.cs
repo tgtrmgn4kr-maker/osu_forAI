@@ -120,10 +120,11 @@ namespace osu.Game.Rulesets.Osu.AI
 
             eventID++;
 
-            GetRewards[rewardCount] = rewardEvent;
-            Logger.Log($"TimeOffset: {GetRewards[rewardCount].TimeOffset}");
-            rewardCount++;
+            if (rewardCount >= 10) return;
 
+            GetRewards[rewardCount] = rewardEvent;
+
+            rewardCount++;
         }
         public void Clear()
         {
