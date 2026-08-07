@@ -25,7 +25,6 @@ using osu.Game.Rulesets.Osu.AI;
 using osu.Game.Rulesets.Osu.AI.Play;
 using osu.Framework.Logging;
 using osu.Game.AI;
-using osu.Game.Rulesets.Osu.AI.Learn;
 
 
 namespace osu.Game.Rulesets.Osu.UI
@@ -46,8 +45,6 @@ namespace osu.Game.Rulesets.Osu.UI
         private SharedActionReader? actionReader = null;
         private PlayingStateContainer? playingStateContainer = null;
         private ObservationWriter? observationWriter = null;
-        private OsuReplayRecorder? osuReplayRecorder = null;
-        private HumanPlayRecorder? humanPlayRecorder = null;
 
 
 
@@ -74,10 +71,8 @@ namespace osu.Game.Rulesets.Osu.UI
             sharedState = new();
             actionReader = new();
             playingStateContainer = new();
-            objectTracker = new ObjectTracker(aIPlayfield, playingStateContainer!);
+            objectTracker = new ObjectTracker(aIPlayfield, playingStateContainer);
             rewardTracker = new RewardTracker(aIPlayfield, sharedState);
-
-            //observationWriter = new ObservationWriter(objectTracker, rewardTracker);
 
 
             if (replayPlayer != null)
@@ -130,7 +125,8 @@ namespace osu.Game.Rulesets.Osu.UI
             long frameID = aIPlayfield.FrameID;
             objectTracker!.Update(frameID);
 
-            humanPlayRecorder!.WriteData(frameID);
+            observationWriter!.Write();
+
             rewardTracker!.Clear();
         }
         protected override ReplayInputHandler CreateReplayInputHandler(Replay replay)
@@ -154,14 +150,9 @@ namespace osu.Game.Rulesets.Osu.UI
 
         protected override ReplayRecorder CreateReplayRecorder(Score score)
         {
-
             Logger.Log("ReplayRecorder Ready");
-            osuReplayRecorder = new OsuReplayRecorder(score);
 
-
-            humanPlayRecorder = new HumanPlayRecorder(objectTracker, rewardTracker, osuReplayRecorder);
-
-            return osuReplayRecorder;
+            return new OsuReplayRecorder(score);
         }
 
         public override double GameplayStartTime
@@ -177,7 +168,8 @@ namespace osu.Game.Rulesets.Osu.UI
 
         protected override void Dispose(bool isDisposing)
         {
-            humanPlayRecorder?.Dispose();
+            observationWriter?.Dispose();
+
             base.Dispose(isDisposing);
         }
 

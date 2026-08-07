@@ -25,11 +25,10 @@ namespace osu.Game.Rulesets.UI
 
         public IEnumerable<DrawableHitObject> Get10AliveObjects() => AliveObjects.Take(10);
 
-        public bool Playing => InternalChildren.Cast<DrawableHitObject>().Any() || AliveEntries.Values.Any();
         public bool Disposed;
 
-        public DrawableHitObject GetNextSlider() => AliveObjects.FirstOrDefault();
-        public DrawableHitObject GetNextSpinner() => AliveObjects.FirstOrDefault();
+        public DrawableHitObject NextSlider => AliveObjects.FirstOrDefault();
+        public DrawableHitObject NextSpinner => AliveObjects.FirstOrDefault();
 
 
         /// <summary>

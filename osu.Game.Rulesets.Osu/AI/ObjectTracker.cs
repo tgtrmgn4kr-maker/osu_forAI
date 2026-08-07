@@ -2,15 +2,16 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Osu.UI;
 using osu.Game.Rulesets.Osu.Objects.Drawables;
-using System.Collections.Generic;
-using osuTK;
 using osu.Game.Rulesets.Osu.Objects;
 using osu.Game.Rulesets.Objects.Types;
-using System.Runtime.InteropServices;
 using osu.Game.AI;
+using osuTK;
+using osu.Framework.Logging;
 
 
 namespace osu.Game.Rulesets.Osu.AI
@@ -46,6 +47,8 @@ namespace osu.Game.Rulesets.Osu.AI
             public byte IsCircle;
             public byte IsSlider;
             public byte IsSpinner;
+            public float X;
+            public float Y;
             public float DistanceToCursorX;
             public float DistanceToCursorY;
             public float ScalarDistance;
@@ -55,6 +58,8 @@ namespace osu.Game.Rulesets.Osu.AI
                 IsCircle = 0;
                 IsSlider = 0;
                 IsSpinner = 0;
+                X = 0;
+                Y = 0;
                 DistanceToCursorX = -1;
                 DistanceToCursorY = -1;
                 ScalarDistance = -1;
@@ -66,6 +71,8 @@ namespace osu.Game.Rulesets.Osu.AI
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct SliderRuntimeData
         {
+            public float X;
+            public float Y;
             public float DistanceToCursorX;
             public float DistanceToCursorY;
             public float ScalarDistance;
@@ -75,8 +82,10 @@ namespace osu.Game.Rulesets.Osu.AI
             public float DirectionY;
             public SliderRuntimeData()
             {
-                DistanceToCursorX = -1;
-                DistanceToCursorY = -1;
+                X = 0;
+                Y = 0;
+                DistanceToCursorX = 0;
+                DistanceToCursorY = 0;
                 ScalarDistance = -1;
                 Velocity = 0;
                 Progress = -1;
@@ -93,8 +102,8 @@ namespace osu.Game.Rulesets.Osu.AI
             public double RemainingTime;
             public SpinnerRuntimeData()
             {
-                SpinsPerMinute = -1;
-                RequiredSPM = -1;
+                SpinsPerMinute = 0;
+                RequiredSPM = 0;
                 Progress = -1;
                 RemainingTime = -1;
             }
@@ -136,6 +145,7 @@ namespace osu.Game.Rulesets.Osu.AI
         public FrameObservation GetFrameObservation => frameObservation;
         private int count;
         private double previousTime;
+        private bool hasPreviousCursor;
         private float previousCursorX;
         private float previousCursorY;
         private long frameID;
@@ -146,9 +156,10 @@ namespace osu.Game.Rulesets.Osu.AI
             this.playfield = playfield;
             this.playingStateContainer = playingStateContainer;
             // The first frame
-            previousCursorX = playfield!.CursorPosition.X;
-            previousCursorY = playfield!.CursorPosition.Y;
+            previousCursorX = playfield.CursorPosition.X;
+            previousCursorY = playfield.CursorPosition.Y;
             GetData = new OsuObjectsData[10];
+            hasPreviousCursor = false;
         }
 
         private void getNext10Objects()
@@ -176,7 +187,7 @@ namespace osu.Game.Rulesets.Osu.AI
                 // All the data is normalised
                 OsuObjectsData data = new();
                 int objTypeInt = objectType[obj.GetType()];
-                //Logger.Log($"objTypeInt: {objTypeInt}");
+
                 if (objTypeInt == 1) // HitCircle
                 {
                     data.IsCircle = 1;
@@ -184,12 +195,13 @@ namespace osu.Game.Rulesets.Osu.AI
                     Vector2 position = ((OsuHitObject)obj.HitObject).StackedPosition;
 
                     // Relative Position
+                    data.X = position.X / 256f;
+                    data.Y = position.Y / 192f;
                     data.DistanceToCursorX = (position.X - playfield!.CursorPosition.X) / 256f;
                     data.DistanceToCursorY = (position.Y - playfield!.CursorPosition.Y) / 192f;
                     data.ScalarDistance = (float)Math.Sqrt(Math.Pow(data.DistanceToCursorX, 2f) + Math.Pow(data.DistanceToCursorY, 2f));
 
                     double TimeToHit = obj.HitObject.StartTime - playfield!.CurrentTime;
-                    //Logger.Log($"HitTime: {TimeToHit}");
                     data.TimeToHit = TimeToHit / 1000f;
                 }
                 else if (objTypeInt == 4) // Slider
@@ -199,12 +211,13 @@ namespace osu.Game.Rulesets.Osu.AI
                     Vector2 position = slider.HitObject.StackedPosition;
 
                     // Relative Position
+                    data.X = position.X / 256f;
+                    data.Y = position.Y / 192f;
                     data.DistanceToCursorX = (position.X - playfield!.CursorPosition.X) / 256f;
                     data.DistanceToCursorY = (position.Y - playfield!.CursorPosition.Y) / 192f;
                     data.ScalarDistance = (float)Math.Sqrt(Math.Pow(data.DistanceToCursorX, 2f) + Math.Pow(data.DistanceToCursorY, 2f));
 
                     double TimeToHit = obj.HitObject.StartTime - playfield!.CurrentTime;
-                    //Logger.Log($"HitTime: {TimeToHit}");
                     data.TimeToHit = TimeToHit / 1000f;
                 }
                 else if (objTypeInt == 7) // Spinner
@@ -233,11 +246,11 @@ namespace osu.Game.Rulesets.Osu.AI
         private void trackGameState()
         {
             frameObservation.PlayingState = (byte)playingStateContainer.LocalUserPlayingState;
-            //Logger.Log($"Playing State: {frameObservation.PlayingState}");
+            Logger.Log($"Playing State: {frameObservation.PlayingState}");
         }
         private void trackSliderBall()
         {
-            var hitObject = playfield?.HitObjectContainer.GetNextSlider();
+            var hitObject = playfield?.HitObjectContainer.NextSlider;
             if (hitObject is DrawableSlider slider)
             {
                 // Multiple sliders may be in the active state at the same time, but only the first slider has a slider ball.
@@ -252,6 +265,8 @@ namespace osu.Game.Rulesets.Osu.AI
                     frameObservation.SliderRuntimeData.Progress = Math.Clamp(1f - progress, 0f, 1f);
 
                     var position = slider.Ball.Position + slider.HitObject.StackedPosition;
+                    frameObservation.SliderRuntimeData.X = position.X;
+                    frameObservation.SliderRuntimeData.Y = position.Y;
                     frameObservation.SliderRuntimeData.DistanceToCursorX = (position.X - playfield!.CursorPosition.X) / 256f;
                     frameObservation.SliderRuntimeData.DistanceToCursorY = (position.Y - playfield!.CursorPosition.Y) / 192f;
                     frameObservation.SliderRuntimeData.ScalarDistance =
@@ -263,15 +278,16 @@ namespace osu.Game.Rulesets.Osu.AI
                     var deltaPosition = nextPosition - position;
                     frameObservation.SliderRuntimeData.DirectionX = deltaPosition.X / 256f;
                     frameObservation.SliderRuntimeData.DirectionY = deltaPosition.Y / 192f;
-                    return;
                 }
             }
-
-            frameObservation.SliderRuntimeData.Progress = -1;
+            else
+            {
+                frameObservation.SliderRuntimeData = new();
+            }
         }
         private void trackSpinner()
         {
-            var hitObject = playfield?.HitObjectContainer.GetNextSpinner();
+            var hitObject = playfield?.HitObjectContainer.NextSpinner;
             if (hitObject is DrawableSpinner spinner)
             {
                 // The spm calculated by osu for each frame
@@ -283,24 +299,37 @@ namespace osu.Game.Rulesets.Osu.AI
                 frameObservation.SpinnerRuntimeData.Progress = Math.Clamp(1f - (remainingTime / totalTime), 0f, 1f);
                 frameObservation.SpinnerRuntimeData.RemainingTime = remainingTime;
             }
+            else
+            {
+                frameObservation.SpinnerRuntimeData = new();
+            }
         }
         private void trackCursor()
         {
             double dt = (frameObservation.CurrentTime - previousTime) / 1000f;
 
-            frameObservation.CursorRuntimeData.X = (playfield!.CursorPosition.X - 256f) / 256f;
-            frameObservation.CursorRuntimeData.Y = (playfield!.CursorPosition.Y - 192f) / 192f;
+            frameObservation.CursorRuntimeData.X = Math.Clamp((playfield!.CursorPosition.X - 256f) / 256f, -1f, 1f);
+            frameObservation.CursorRuntimeData.Y = Math.Clamp((playfield!.CursorPosition.Y - 192f) / 192f, -1f, 1f);
 
-            float dx = frameObservation.CursorRuntimeData.X - previousCursorX;
-            float dy = frameObservation.CursorRuntimeData.Y - previousCursorY;
+            if (dt <= 0 || !hasPreviousCursor)
+            {
+                frameObservation.CursorRuntimeData.VelocityX = 0d;
+                frameObservation.CursorRuntimeData.VelocityY = 0d;
 
-            frameObservation.CursorRuntimeData.VelocityX = dx / dt;
-            frameObservation.CursorRuntimeData.VelocityY = dy / dt;
+                hasPreviousCursor = true;
+            }
+            else
+            {
+                float dx = frameObservation.CursorRuntimeData.X - previousCursorX;
+                float dy = frameObservation.CursorRuntimeData.Y - previousCursorY;
+
+                frameObservation.CursorRuntimeData.VelocityX = Math.Clamp(dx / dt, -30d, 30d);
+                frameObservation.CursorRuntimeData.VelocityY = Math.Clamp(dy / dt, -30d, 30d);
+            }
 
             previousTime = frameObservation.CurrentTime;
             previousCursorX = frameObservation.CursorRuntimeData.X;
             previousCursorY = frameObservation.CursorRuntimeData.Y;
-
         }
     }
 }

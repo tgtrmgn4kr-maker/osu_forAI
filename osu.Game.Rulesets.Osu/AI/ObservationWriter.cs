@@ -4,7 +4,6 @@
 using System;
 using System.IO.MemoryMappedFiles;
 using System.Runtime.InteropServices;
-using osu.Framework.Logging;
 
 namespace osu.Game.Rulesets.Osu.AI
 {
@@ -32,9 +31,12 @@ namespace osu.Game.Rulesets.Osu.AI
 
             bufferSizeOfSharedObservation = sizeOfObservation;
             bufferSizeOfObjectData = sizeofOsuObjectData * 10;
-            bufferSizeOfReward = sizeOfReward * 5;
+            bufferSizeOfReward = sizeOfReward * 10;
 
-            totalSize = bufferSizeOfObjectData + bufferSizeOfReward + bufferSizeOfSharedObservation;
+            totalSize =
+                bufferSizeOfObjectData
+                + bufferSizeOfReward
+                + bufferSizeOfSharedObservation;
 
             if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 throw new PlatformNotSupportedException();
@@ -74,10 +76,11 @@ namespace osu.Game.Rulesets.Osu.AI
 
         public void Dispose()
         {
+            // Send a end frame0
             setPointer();
             ObjectTracker.FrameObservation doneFrame = new();
             *(ObjectTracker.FrameObservation*)ptr = doneFrame;
-            Logger.Log("Disposed");
+
             accessor?.Dispose();
             mmf?.Dispose();
         }
