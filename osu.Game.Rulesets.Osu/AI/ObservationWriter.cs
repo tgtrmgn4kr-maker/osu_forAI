@@ -83,6 +83,7 @@ namespace osu.Game.Rulesets.Osu.AI
 
             accessor?.Dispose();
             mmf?.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }
