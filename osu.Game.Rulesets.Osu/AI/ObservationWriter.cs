@@ -80,6 +80,7 @@ namespace osu.Game.Rulesets.Osu.AI
             Logger.Log("Disposed");
             accessor?.Dispose();
             mmf?.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }

@@ -265,8 +265,8 @@ namespace osu.Game.Rulesets.Osu.AI
                     frameObservation.SliderRuntimeData.Progress = Math.Clamp(1f - progress, 0f, 1f);
 
                     var position = slider.Ball.Position + slider.HitObject.StackedPosition;
-                    frameObservation.SliderRuntimeData.X = position.X;
-                    frameObservation.SliderRuntimeData.Y = position.Y;
+                    frameObservation.SliderRuntimeData.X = position.X / 256f;
+                    frameObservation.SliderRuntimeData.Y = position.Y / 192f;
                     frameObservation.SliderRuntimeData.DistanceToCursorX = (position.X - playfield!.CursorPosition.X) / 256f;
                     frameObservation.SliderRuntimeData.DistanceToCursorY = (position.Y - playfield!.CursorPosition.Y) / 192f;
                     frameObservation.SliderRuntimeData.ScalarDistance =
