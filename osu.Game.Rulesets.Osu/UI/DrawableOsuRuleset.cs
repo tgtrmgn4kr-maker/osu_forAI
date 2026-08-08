@@ -101,12 +101,7 @@ namespace osu.Game.Rulesets.Osu.UI
             return aIPlayfield;
         }
 
-        protected override PassThroughInputManager CreateInputManager()
-        {
-            Logger.Log("InputManager Ready");
-            return new OsuInputManager(Ruleset.RulesetInfo);
-        }
-
+        protected override PassThroughInputManager CreateInputManager() => new OsuInputManager(Ruleset.RulesetInfo);
 
         public override PlayfieldAdjustmentContainer CreatePlayfieldAdjustmentContainer() => new OsuPlayfieldAdjustmentContainer { AlignWithStoryboard = true };
 
@@ -169,6 +164,7 @@ namespace osu.Game.Rulesets.Osu.UI
         protected override void Dispose(bool isDisposing)
         {
             observationWriter?.Dispose();
+            actionReader?.Dispose();
 
             base.Dispose(isDisposing);
         }
