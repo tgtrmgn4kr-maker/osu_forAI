@@ -148,7 +148,6 @@ namespace osu.Game.Rulesets.Osu.AI
         private bool hasPreviousCursor;
         private float previousCursorX;
         private float previousCursorY;
-        private long frameID;
         private PlayingStateContainer playingStateContainer;
 
         public ObjectTracker(OsuPlayfield.AIPlayfield playfield, PlayingStateContainer playingStateContainer)
@@ -162,7 +161,7 @@ namespace osu.Game.Rulesets.Osu.AI
             hasPreviousCursor = false;
         }
 
-        private void getNext10Objects()
+        private void getNext10Objects(long frameID)
         {
             // The objects here have been sorted by StartTime
             var nextObjects = playfield?.HitObjectContainer.Get10AliveObjects();
@@ -235,8 +234,7 @@ namespace osu.Game.Rulesets.Osu.AI
         }
         public void Update(long frameID)
         {
-            this.frameID = frameID;
-            getNext10Objects(); // Here a new frame observation is created
+            getNext10Objects(frameID); // Here a new frame observation is created
             trackSliderBall();
             trackSpinner();
             trackCursor();
