@@ -297,7 +297,7 @@ namespace osu.Game.Rulesets.Osu.AI
                 double remainingTime = spinner.HitObject.EndTime - playfield!.CurrentTime;
                 double totalTime = spinner.HitObject.Duration;
                 frameObservation.SpinnerRuntimeData.Progress = Math.Clamp(1f - (remainingTime / totalTime), 0f, 1f);
-                frameObservation.SpinnerRuntimeData.RemainingTime = remainingTime;
+                frameObservation.SpinnerRuntimeData.RemainingTime = remainingTime / 1000f;
             }
             else
             {
