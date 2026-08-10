@@ -113,7 +113,7 @@ namespace osu.Game.Rulesets.Osu.AI
             {
                 ObjectType = objectType[obj.GetType()],
                 ResultType = scoreConverter[result.Type],
-                TimeOffset = result.TimeOffset,
+                TimeOffset = result.TimeOffset / 1000f,
                 EventID = eventID,
                 Failed = (byte)(result.FailedAtJudgement ? 1 : 0),
             };
