@@ -172,6 +172,7 @@ namespace osu.Game.Rulesets.Osu.AI
         }
         public void Update(long frameID)
         {
+            frameObservation = new(); // Reset the observation
             trackCursor(); // Objects need coordinate of the cursor to calculate relative position
             getNext10Objects(frameID); // Here a new frame observation is created
             trackSliderBall();
@@ -180,9 +181,8 @@ namespace osu.Game.Rulesets.Osu.AI
         }
         private void trackCursor()
         {
-            // If divided by 1000, 99% of the velocity less than 5,
-            // To normalise the velocity, divide by 5000
-            double dt = (frameObservation.CurrentTime - previousTime) / 5000f;
+            frameObservation.CurrentTime = playfield!.CurrentTime;
+            double dt = (frameObservation.CurrentTime - previousTime) / 100f;
 
             // Normalise cursor position
             frameObservation.CursorRuntimeData.X = Math.Clamp((playfield!.CursorPosition.X - 256f) / 256f, -1f, 1f);
@@ -191,7 +191,6 @@ namespace osu.Game.Rulesets.Osu.AI
             {
                 frameObservation.CursorRuntimeData.VelocityX = 0d;
                 frameObservation.CursorRuntimeData.VelocityY = 0d;
-
                 hasPreviousCursor = true;
             }
             else
@@ -214,17 +213,12 @@ namespace osu.Game.Rulesets.Osu.AI
 
             if (nextObjects is null) return;
 
-            double currentTime = playfield!.CurrentTime;
-
             count = 0;
 
-            frameObservation = new()
-            {
-                CurrentTime = currentTime,
-                SliderRuntimeData = new(),
-                SpinnerRuntimeData = new(),
-                FrameID = frameID
-            };
+            double currentTime = playfield!.CurrentTime;
+            frameObservation.CurrentTime = currentTime;
+            frameObservation.FrameID = frameID;
+
             GetData = new OsuObjectsData[10];
 
             foreach (DrawableHitObject obj in nextObjects)
@@ -242,9 +236,9 @@ namespace osu.Game.Rulesets.Osu.AI
                     // Relative Position
                     data.X = (position.X - 256f) / 256f;
                     data.Y = (position.Y - 192f) / 192f;
-                    data.DistanceToCursorX = (data.X - frameObservation.CursorRuntimeData.X) / 256f;
-                    data.DistanceToCursorY = (data.Y - frameObservation.CursorRuntimeData.Y) / 192f;
-                    data.ScalarDistance = (float)Math.Sqrt(Math.Pow(data.DistanceToCursorX, 2f) + Math.Pow(data.DistanceToCursorY, 2f));
+                    data.DistanceToCursorX = data.X - frameObservation.CursorRuntimeData.X;
+                    data.DistanceToCursorY = data.Y - frameObservation.CursorRuntimeData.Y;
+                    data.ScalarDistance = (float)Math.Sqrt(data.DistanceToCursorX * data.DistanceToCursorX + data.DistanceToCursorY * data.DistanceToCursorY);
 
                     double TimeToHit = obj.HitObject.StartTime - frameObservation.CurrentTime;
                     data.TimeToHit = TimeToHit / 1000f;
@@ -257,9 +251,9 @@ namespace osu.Game.Rulesets.Osu.AI
                     // Relative Position
                     data.X = (position.X - 256f) / 256f;
                     data.Y = (position.Y - 192f) / 192f;
-                    data.DistanceToCursorX = (data.X - frameObservation.CursorRuntimeData.X) / 256f;
-                    data.DistanceToCursorY = (data.Y - frameObservation.CursorRuntimeData.Y) / 192f;
-                    data.ScalarDistance = (float)Math.Sqrt(Math.Pow(data.DistanceToCursorX, 2f) + Math.Pow(data.DistanceToCursorY, 2f));
+                    data.DistanceToCursorX = data.X - frameObservation.CursorRuntimeData.X;
+                    data.DistanceToCursorY = data.Y - frameObservation.CursorRuntimeData.Y;
+                    data.ScalarDistance = (float)Math.Sqrt(data.DistanceToCursorX * data.DistanceToCursorX + data.DistanceToCursorY * data.DistanceToCursorY);
 
                     double TimeToHit = obj.HitObject.StartTime - frameObservation.CurrentTime;
                     data.TimeToHit = TimeToHit / 1000f;
@@ -305,8 +299,8 @@ namespace osu.Game.Rulesets.Osu.AI
                 frameObservation.SliderRuntimeData.DistanceToCursorY = frameObservation.SliderRuntimeData.Y - frameObservation.CursorRuntimeData.Y;
                 frameObservation.SliderRuntimeData.ScalarDistance =
                     (float)Math.Sqrt(
-                          Math.Pow(frameObservation.SliderRuntimeData.DistanceToCursorX, 2)
-                        + Math.Pow(frameObservation.SliderRuntimeData.DistanceToCursorY, 2));
+                          frameObservation.SliderRuntimeData.DistanceToCursorX * frameObservation.SliderRuntimeData.DistanceToCursorX
+                        + frameObservation.SliderRuntimeData.DistanceToCursorY * frameObservation.SliderRuntimeData.DistanceToCursorY);
 
                 var nextPosition = slider.HitObject.StackedPosition + slider.HitObject.CurvePositionAt(Math.Clamp(progress + 0.1f, 0, 1));
                 var deltaPosition = nextPosition - position;
