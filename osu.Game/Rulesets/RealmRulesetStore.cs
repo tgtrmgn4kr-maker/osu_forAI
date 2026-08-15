@@ -33,7 +33,10 @@ namespace osu.Game.Rulesets
         {
             realmAccess.Write(realm =>
             {
-                var rulesets = realm.All<RulesetInfo>();
+                // RulesetInfo is mapped to "Ruleset" via [MapTo("Ruleset")] attribute.
+                // Query rulesets if the table exists in the schema; otherwise start with empty list.
+                bool rulesetTableExists = realm.Schema.TryFindObjectSchema("Ruleset", out _);
+                var rulesets = rulesetTableExists ? realm.All<RulesetInfo>().ToList() : new List<RulesetInfo>();
 
                 List<Ruleset> instances = LoadedAssemblies.Values
                                                           .Select(r => Activator.CreateInstance(r) as Ruleset)
@@ -44,8 +47,18 @@ namespace osu.Game.Rulesets
                 // add all legacy rulesets first to ensure they have exclusive choice of primary key.
                 foreach (var r in instances.Where(r => r is ILegacyRuleset))
                 {
-                    if (realm.All<RulesetInfo>().FirstOrDefault(rr => rr.OnlineID == r.RulesetInfo.OnlineID) == null)
-                        realm.Add(new RulesetInfo(r.RulesetInfo.ShortName, r.RulesetInfo.Name, r.RulesetInfo.InstantiationInfo, r.RulesetInfo.OnlineID));
+                    if (rulesetTableExists && realm.All<RulesetInfo>().FirstOrDefault(rr => rr.OnlineID == r.RulesetInfo.OnlineID) == null)
+                    {
+                        var newInfo = new RulesetInfo(r.RulesetInfo.ShortName, r.RulesetInfo.Name, r.RulesetInfo.InstantiationInfo, r.RulesetInfo.OnlineID);
+                        realm.Add(newInfo);
+                        rulesets.Add(newInfo);
+                    }
+                    else if (!rulesetTableExists)
+                    {
+                        var newInfo = new RulesetInfo(r.RulesetInfo.ShortName, r.RulesetInfo.Name, r.RulesetInfo.InstantiationInfo, r.RulesetInfo.OnlineID);
+                        realm.Add(newInfo);
+                        rulesets.Add(newInfo);
+                    }
                 }
 
                 // add any other rulesets which have assemblies present but are not yet in the database.
@@ -63,7 +76,11 @@ namespace osu.Game.Rulesets
                             existingSameShortName.InstantiationInfo = r.RulesetInfo.InstantiationInfo;
                         }
                         else
-                            realm.Add(new RulesetInfo(r.RulesetInfo.ShortName, r.RulesetInfo.Name, r.RulesetInfo.InstantiationInfo, r.RulesetInfo.OnlineID));
+                        {
+                            var newInfo = new RulesetInfo(r.RulesetInfo.ShortName, r.RulesetInfo.Name, r.RulesetInfo.InstantiationInfo, r.RulesetInfo.OnlineID);
+                            realm.Add(newInfo);
+                            rulesets.Add(newInfo);
+                        }
                     }
                 }
 

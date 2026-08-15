@@ -27,9 +27,6 @@ namespace osu.Game.Rulesets.UI
 
         public bool Disposed;
 
-        public DrawableHitObject NextSlider => AliveObjects.FirstOrDefault();
-        public DrawableHitObject NextSpinner => AliveObjects.FirstOrDefault();
-
 
         /// <summary>
         /// Invoked when a <see cref="DrawableHitObject"/> is judged.
