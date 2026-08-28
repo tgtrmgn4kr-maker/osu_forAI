@@ -47,13 +47,8 @@ namespace osu.Game.Rulesets
                 // add all legacy rulesets first to ensure they have exclusive choice of primary key.
                 foreach (var r in instances.Where(r => r is ILegacyRuleset))
                 {
-                    if (rulesetTableExists && realm.All<RulesetInfo>().FirstOrDefault(rr => rr.OnlineID == r.RulesetInfo.OnlineID) == null)
-                    {
-                        var newInfo = new RulesetInfo(r.RulesetInfo.ShortName, r.RulesetInfo.Name, r.RulesetInfo.InstantiationInfo, r.RulesetInfo.OnlineID);
-                        realm.Add(newInfo);
-                        rulesets.Add(newInfo);
-                    }
-                    else if (!rulesetTableExists)
+                    var existing = rulesets.FirstOrDefault(rr => rr.OnlineID == r.RulesetInfo.OnlineID);
+                    if (existing == null)
                     {
                         var newInfo = new RulesetInfo(r.RulesetInfo.ShortName, r.RulesetInfo.Name, r.RulesetInfo.InstantiationInfo, r.RulesetInfo.OnlineID);
                         realm.Add(newInfo);
