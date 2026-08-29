@@ -57,18 +57,18 @@ namespace osu.Game.Rulesets.Osu.AI
             setPointer();
 
             *(ObjectTracker.FrameObservation*)ptr = objectTracker.GetFrameObservation;
-            ptr += Marshal.SizeOf<ObjectTracker.FrameObservation>();
+            ptr += sizeOfObservation;
 
             for (int i = 0; i < 10; i++)
             {
                 *(ObjectTracker.OsuObjectsData*)ptr = objectTracker.GetData[i];
-                ptr += Marshal.SizeOf<ObjectTracker.OsuObjectsData>();
+                ptr += sizeofOsuObjectData;
             }
 
             for (int i = 0; i < 10; i++)
             {
                 *(RewardTracker.RewardEvent*)ptr = rewardTracker.GetRewards[i];
-                ptr += Marshal.SizeOf<RewardTracker.RewardEvent>();
+                ptr += sizeOfReward;
             }
 
         }
