@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System;
 using osu.Game.Rulesets.Scoring;
 using System.Runtime.InteropServices;
-using osu.Framework.Logging;
 
 
 namespace osu.Game.Rulesets.Osu.AI
@@ -23,6 +22,7 @@ namespace osu.Game.Rulesets.Osu.AI
             public int ObjectType;
             public int ResultType;
             public double TimeOffset;
+            // If failed due to this judgement, the failed field will be set to 1
             public byte Failed;
             public RewardEvent()
             {
@@ -51,6 +51,9 @@ namespace osu.Game.Rulesets.Osu.AI
             [typeof(DrawableSpinnerBonusTick)] = 9,
         };
 
+        /// <summary>
+        /// Convert hit result to number, the actual score is adjusted by Python
+        /// </summary>
         private Dictionary<HitResult, int> scoreConverter = new()
         {
             // HitCircle, Spinner, SliderHead
@@ -95,13 +98,14 @@ namespace osu.Game.Rulesets.Osu.AI
 
         internal void CollectObjects(DrawableHitObject obj)
         {
+            // Ensure that there is no object subscribed twice,
+            // otherwise it will cause duplicated triggering of ScoreGetter
             if (!state.SubscribedObjects.Contains(obj.HitObject)
                 && !state.SubscribedInt.Contains(obj.HitObject.GetHashCode()))
             {
                 obj.OnNewResult += ScoreGetter;
                 state.SubscribedObjects.Add(obj.HitObject);
                 state.SubscribedInt.Add(obj.HitObject.GetHashCode());
-                Logger.Log($"Object subscribed: {obj.HitObject.GetHashCode()}");
             }
         }
         public void ScoreGetter(DrawableHitObject obj, JudgementResult result)
@@ -121,10 +125,11 @@ namespace osu.Game.Rulesets.Osu.AI
             eventID++;
 
             GetRewards[rewardCount] = rewardEvent;
-            Logger.Log($"TimeOffset: {GetRewards[rewardCount].TimeOffset}");
+
             rewardCount++;
 
         }
+        // Clear the array each frame
         public void Clear()
         {
             // Clear the array
