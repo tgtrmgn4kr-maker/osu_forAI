@@ -11,6 +11,7 @@ using osu.Game.Rulesets.Osu.Objects.Drawables;
 using osu.Game.Rulesets.Osu.Objects;
 using osu.Game.AI;
 using osuTK;
+using osu.Framework.Logging;
 
 
 
@@ -28,16 +29,16 @@ namespace osu.Game.Rulesets.Osu.AI
             public long FrameID;
             public double CurrentTime;
 
-            public CursorRuntimeData CursorRuntimeData;
-            public SliderRuntimeData SliderRuntimeData;
+            public CursorRuntimeData Cursor;
+            public SliderRuntimeData Slider;
             public SpinnerRuntimeData SpinnerRuntimeData;
             public FrameObservation() // Prevent from uninitialised when being written in memory or file
             {
                 PlayingState = 0;
                 FrameID = 0;
                 CurrentTime = 0;
-                CursorRuntimeData = new();
-                SliderRuntimeData = new();
+                Cursor = new();
+                Slider = new();
                 SpinnerRuntimeData = new();
             }
         }
@@ -147,7 +148,7 @@ namespace osu.Game.Rulesets.Osu.AI
             [typeof(DrawableSpinnerBonusTick)] = 9,
         };
 
-        private OsuPlayfield.AIPlayfield? playfield;
+        private readonly OsuPlayfield.AIPlayfield? playfield;
         private FrameObservation frameObservation;
 
         public OsuObjectsData[] GetData;
@@ -181,6 +182,9 @@ namespace osu.Game.Rulesets.Osu.AI
             trackSliderBall();
             trackSpinner();
             trackGameState();
+
+            Logger.Log("ObjectTracker: Update");
+
         }
         private void trackCursor()
         {
@@ -188,26 +192,26 @@ namespace osu.Game.Rulesets.Osu.AI
             double dt = (frameObservation.CurrentTime - previousTime) / 100f;
 
             // Normalise cursor position
-            frameObservation.CursorRuntimeData.X = Math.Clamp((playfield!.CursorPosition.X - 256f) / 256f, -1f, 1f);
-            frameObservation.CursorRuntimeData.Y = Math.Clamp((playfield!.CursorPosition.Y - 192f) / 192f, -1f, 1f);
+            frameObservation.Cursor.X = Math.Clamp((playfield!.CursorPosition.X - 256f) / 256f, -1f, 1f);
+            frameObservation.Cursor.Y = Math.Clamp((playfield!.CursorPosition.Y - 192f) / 192f, -1f, 1f);
             if (dt <= 0 || !hasPreviousCursor)
             {
-                frameObservation.CursorRuntimeData.VelocityX = 0d;
-                frameObservation.CursorRuntimeData.VelocityY = 0d;
+                frameObservation.Cursor.VelocityX = 0d;
+                frameObservation.Cursor.VelocityY = 0d;
                 hasPreviousCursor = true;
             }
             else
             {
-                float dx = frameObservation.CursorRuntimeData.X - previousCursorX;
-                float dy = frameObservation.CursorRuntimeData.Y - previousCursorY;
+                float dx = frameObservation.Cursor.X - previousCursorX;
+                float dy = frameObservation.Cursor.Y - previousCursorY;
 
-                frameObservation.CursorRuntimeData.VelocityX = Math.Clamp(dx / dt, -10f, 10f);
-                frameObservation.CursorRuntimeData.VelocityY = Math.Clamp(dy / dt, -10f, 10f);
+                frameObservation.Cursor.VelocityX = Math.Clamp(dx / dt, -10f, 10f);
+                frameObservation.Cursor.VelocityY = Math.Clamp(dy / dt, -10f, 10f);
             }
 
             previousTime = frameObservation.CurrentTime;
-            previousCursorX = frameObservation.CursorRuntimeData.X;
-            previousCursorY = frameObservation.CursorRuntimeData.Y;
+            previousCursorX = frameObservation.Cursor.X;
+            previousCursorY = frameObservation.Cursor.Y;
         }
         private void getNext10Objects(long frameID, IEnumerable<DrawableHitObject>? nextObjects)
         {
@@ -227,7 +231,6 @@ namespace osu.Game.Rulesets.Osu.AI
 
             GetData = new OsuObjectsData[10];
 
-
             foreach (DrawableHitObject obj in nextObjects)
             {
                 // All the data is normalised
@@ -243,8 +246,8 @@ namespace osu.Game.Rulesets.Osu.AI
                     // Relative Position
                     data.X = (position.X - 256f) / 256f;
                     data.Y = (position.Y - 192f) / 192f;
-                    data.DistanceToCursorX = data.X - frameObservation.CursorRuntimeData.X;
-                    data.DistanceToCursorY = data.Y - frameObservation.CursorRuntimeData.Y;
+                    data.DistanceToCursorX = data.X - frameObservation.Cursor.X;
+                    data.DistanceToCursorY = data.Y - frameObservation.Cursor.Y;
                     data.ScalarDistance = (float)Math.Sqrt(data.DistanceToCursorX * data.DistanceToCursorX + data.DistanceToCursorY * data.DistanceToCursorY);
 
                     double TimeToHit = obj.HitObject.StartTime - frameObservation.CurrentTime;
@@ -258,8 +261,8 @@ namespace osu.Game.Rulesets.Osu.AI
                     // Relative Position
                     data.X = (position.X - 256f) / 256f;
                     data.Y = (position.Y - 192f) / 192f;
-                    data.DistanceToCursorX = data.X - frameObservation.CursorRuntimeData.X;
-                    data.DistanceToCursorY = data.Y - frameObservation.CursorRuntimeData.Y;
+                    data.DistanceToCursorX = data.X - frameObservation.Cursor.X;
+                    data.DistanceToCursorY = data.Y - frameObservation.Cursor.Y;
                     data.ScalarDistance = (float)Math.Sqrt(data.DistanceToCursorX * data.DistanceToCursorX + data.DistanceToCursorY * data.DistanceToCursorY);
 
                     double TimeToHit = obj.HitObject.StartTime - frameObservation.CurrentTime;
@@ -268,6 +271,7 @@ namespace osu.Game.Rulesets.Osu.AI
                     if (!findFirstSlider)
                     {
                         findFirstSlider = true;
+                        // Only when the time to hit of the slider is less than 10ms, the slider ball appears in the frame.
                         if (TimeToHit <= 10)
                             firstSlider = (DrawableSlider)obj;
                     }
@@ -304,27 +308,27 @@ namespace osu.Game.Rulesets.Osu.AI
             var position = firstSlider.Ball.Position + firstSlider.HitObject.StackedPosition;
 
             double velocity = firstSlider.HitObject.Velocity;
-            frameObservation.SliderRuntimeData.Velocity = velocity / 10f;
+            frameObservation.Slider.Velocity = velocity / 10f;
 
             // Progress
-            frameObservation.SliderRuntimeData.Progress = progress;
+            frameObservation.Slider.Progress = progress;
 
-            frameObservation.SliderRuntimeData.X = Math.Clamp((position.X - 256f) / 256f, -1f, 1f);
-            frameObservation.SliderRuntimeData.Y = Math.Clamp((position.Y - 192f) / 192f, -1f, 1f);
+            frameObservation.Slider.X = Math.Clamp((position.X - 256f) / 256f, -1f, 1f);
+            frameObservation.Slider.Y = Math.Clamp((position.Y - 192f) / 192f, -1f, 1f);
 
             // Distance to cursor
             // Both variable are normalised
-            frameObservation.SliderRuntimeData.DistanceToCursorX = frameObservation.SliderRuntimeData.X - frameObservation.CursorRuntimeData.X;
-            frameObservation.SliderRuntimeData.DistanceToCursorY = frameObservation.SliderRuntimeData.Y - frameObservation.CursorRuntimeData.Y;
-            frameObservation.SliderRuntimeData.ScalarDistance =
+            frameObservation.Slider.DistanceToCursorX = frameObservation.Slider.X - frameObservation.Cursor.X;
+            frameObservation.Slider.DistanceToCursorY = frameObservation.Slider.Y - frameObservation.Cursor.Y;
+            frameObservation.Slider.ScalarDistance =
                 (float)Math.Sqrt(
-                      frameObservation.SliderRuntimeData.DistanceToCursorX * frameObservation.SliderRuntimeData.DistanceToCursorX
-                    + frameObservation.SliderRuntimeData.DistanceToCursorY * frameObservation.SliderRuntimeData.DistanceToCursorY);
+                      frameObservation.Slider.DistanceToCursorX * frameObservation.Slider.DistanceToCursorX
+                    + frameObservation.Slider.DistanceToCursorY * frameObservation.Slider.DistanceToCursorY);
 
             var nextPosition = firstSlider.HitObject.StackedPosition + firstSlider.HitObject.CurvePositionAt(Math.Clamp(progress + 0.1f, 0, 1));
             var deltaPosition = nextPosition - position;
-            frameObservation.SliderRuntimeData.DirectionX = deltaPosition.X / 256f;
-            frameObservation.SliderRuntimeData.DirectionY = deltaPosition.Y / 192f;
+            frameObservation.Slider.DirectionX = deltaPosition.X / 256f;
+            frameObservation.Slider.DirectionY = deltaPosition.Y / 192f;
 
         }
         private void trackSpinner()

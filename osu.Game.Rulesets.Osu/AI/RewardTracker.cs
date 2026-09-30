@@ -33,7 +33,7 @@ namespace osu.Game.Rulesets.Osu.AI
                 Failed = 0;
             }
         }
-        private Dictionary<Type, int> objectType = new()
+        private readonly Dictionary<Type, int> objectType = new()
         {
             // HitCircle
             [typeof(DrawableHitCircle)] = 1,
@@ -54,7 +54,7 @@ namespace osu.Game.Rulesets.Osu.AI
         /// <summary>
         /// Convert hit result to number, the actual score is adjusted by Python
         /// </summary>
-        private Dictionary<HitResult, int> scoreConverter = new()
+        private readonly Dictionary<HitResult, int> scoreConverter = new()
         {
             // HitCircle, Spinner, SliderHead
             {HitResult.Great, 1},

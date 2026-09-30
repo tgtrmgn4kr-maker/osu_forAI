@@ -159,7 +159,7 @@ namespace osu.Game.Screens.Play
 
         protected ScoreProcessor ScoreProcessor { get; private set; }
 
-        protected HealthProcessor HealthProcessor { get; private set; }
+        public HealthProcessor HealthProcessor { get; private set; }
 
         protected DrawableRuleset DrawableRuleset { get; private set; }
 
@@ -184,6 +184,10 @@ namespace osu.Game.Screens.Play
         /// Available only after the player is loaded.
         /// </summary>
         public Score Score { get; private set; }
+
+        public event Action<Player> Exited;
+        public event Action Passed;
+        public event Action HealthProcessorLoaded;
 
         /// <summary>
         /// Create a new player instance.
@@ -418,6 +422,7 @@ namespace osu.Game.Screens.Play
             // Bind the judgement processors to ourselves
             ScoreProcessor.HasCompleted.BindValueChanged(_ => checkScoreCompleted());
             HealthProcessor.Failed += onFail;
+            HealthProcessorLoaded?.Invoke();
 
             // Provide judgement processors to mods after they're loaded so that they're on the gameplay clock,
             // this is required for mods that apply transforms to these processors.
@@ -693,6 +698,8 @@ namespace osu.Game.Screens.Play
 
             if (this.IsCurrentScreen())
             {
+                Exited.Invoke(this);
+
                 skipExitTransition = skipTransition;
 
                 // The actual exit is performed if
@@ -832,6 +839,8 @@ namespace osu.Game.Screens.Play
                 return;
 
             GameplayState.HasPassed = true;
+            Passed?.Invoke();
+
 
             // Setting this early in the process means that even if something were to go wrong in the order of events following, there
             // is no chance that a user could return to the (already completed) Player instance from a child screen.

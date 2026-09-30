@@ -2,7 +2,6 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using osu.Framework.Allocation;
-using osu.Framework.Logging;
 using osu.Framework.Screens;
 using osu.Game.AI;
 using osu.Game.Scoring;
@@ -19,25 +18,19 @@ namespace osu.Game.Screens.Play
         public PlayingStateContainer PlayingStateContainer;
         public AIPlayer(PlayingStateContainer playingStateContainer)
         {
-            PlayingStateContainer = new()
-            {
-                LocalUserPlayingState = LocalUserPlayingState
-            };
+            PlayingStateContainer = playingStateContainer;
         }
 
         protected override void PerformFail()
         {
-            PlayingStateContainer.LocalUserPlayingState = LocalUserPlayingState.Break;
-            Logger.Log("Playing Failed");
+            PlayingStateContainer.LocalUserPlayingState = LocalUserPlayingState.NotPlaying;
             base.PerformFail();
         }
 
         public override void OnEntering(ScreenTransitionEvent e)
         {
             PlayingStateContainer.LocalUserPlayingState = LocalUserPlayingState.Playing;
-            Logger.Log($"Playing Start");
             base.OnEntering(e);
-
         }
 
         protected override void LoadComplete()

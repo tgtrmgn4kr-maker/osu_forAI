@@ -153,6 +153,9 @@ namespace osu.Game.Screens.Play
         /// </summary>
         public Player? CurrentPlayer { get; private set; }
 
+        public event Action<Player>? PlayerCreated;
+        public event Action? EpisodeStarted;
+
         /// <summary>
         /// Whether the current player instance has been consumed via <see cref="consumePlayer"/>.
         /// </summary>
@@ -365,9 +368,18 @@ namespace osu.Game.Screens.Play
 
         #region Screen handling
 
+        public bool Restart(bool quickRestart)
+        {
+            if (CurrentPlayer == null) return false;
+
+            return CurrentPlayer.Restart(quickRestart);
+        }
+
         public override void OnEntering(ScreenTransitionEvent e)
         {
             base.OnEntering(e);
+
+            EpisodeStarted?.Invoke();
 
             Beatmap.Value.Track.AddAdjustment(AdjustableProperty.Volume, volumeAdjustment);
 
@@ -388,11 +400,14 @@ namespace osu.Game.Screens.Play
 
             showMuteWarningIfNeeded();
             showBatteryWarningIfNeeded();
+
         }
 
         public override void OnResuming(ScreenTransitionEvent e)
         {
             base.OnResuming(e);
+
+            EpisodeStarted?.Invoke();
 
             Debug.Assert(CurrentPlayer != null);
 
@@ -552,6 +567,7 @@ namespace osu.Game.Screens.Play
                 return;
 
             CurrentPlayer = createPlayer();
+            PlayerCreated?.Invoke(CurrentPlayer);
             CurrentPlayer.Configuration.AutomaticallySkipIntro |= QuickRestart;
             CurrentPlayer.RestartCount = restartCount++;
             CurrentPlayer.PrepareLoaderForRestart = prepareForRestart;

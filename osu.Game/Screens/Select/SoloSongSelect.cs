@@ -23,10 +23,12 @@ using osu.Game.Users;
 using osu.Game.Utils;
 using osu.Game.AI;
 using WebCommonStrings = osu.Game.Resources.Localisation.Web.CommonStrings;
+using osu.Framework.Bindables;
+using osu.Framework.Logging;
 
 namespace osu.Game.Screens.Select
 {
-    public partial class SoloSongSelect : SongSelect
+    public partial class SoloSongSelect : SongSelect, IDisposable
     {
         protected override UserActivity InitialActivity => new UserActivity.ChoosingBeatmap();
 
@@ -54,12 +56,17 @@ namespace osu.Game.Screens.Select
         private Sample? sampleConfirmSelection { get; set; }
 
         private PlayingStateContainer? playingStateContainer;
+        private EnvironmentController? environmentController;
+        private RestartRequestHandler? restartRequestReader;
+        private Bindable<long> frameCountBindable = new();
 
         [BackgroundDependencyLoader]
         private void load(AudioManager audio)
         {
             sampleConfirmSelection = audio.Samples.Get(@"SongSelect/confirm-selection");
-            playingStateContainer = new();
+            playingStateContainer = new(frameCountBindable);
+            environmentController = new();
+            restartRequestReader = new RestartRequestHandler(environmentController);
 
             AddInternal(new SongSelectTouchInputDetector());
         }
@@ -129,7 +136,11 @@ namespace osu.Game.Screens.Select
 
             sampleConfirmSelection?.Play();
 
-            this.Push(playerLoader = new PlayerLoader(createPlayer));
+            playerLoader = new PlayerLoader(createPlayer);
+
+            environmentController!.AttachPlayerLoader(playerLoader);
+
+            this.Push(playerLoader);
 
             Player createPlayer()
             {
@@ -137,7 +148,6 @@ namespace osu.Game.Screens.Select
 
                 var replayGeneratingMod = Mods.Value.OfType<ICreateReplayData>().FirstOrDefault();
 
-                // ReplayPlayer和SoloPlayer都可以用PlayerLoader
                 if (replayGeneratingMod != null)
                 {
                     player = new ReplayPlayer(replayGeneratingMod.CreateScoreFromReplayData);
@@ -172,6 +182,23 @@ namespace osu.Game.Screens.Select
 
             revertMods();
             return false;
+        }
+
+        protected override void Update()
+        {
+            base.Update();
+            /*
+            restartRequestReader?.Update();
+            frameCountBindable.Value++;
+            */
+
+            Logger.Log("SongSelect: Update");
+        }
+
+        protected override void Dispose(bool isDisposing)
+        {
+            base.Dispose(isDisposing);
+            restartRequestReader?.Dispose(); // Dispose the restart request reader
         }
 
         private ModAutoplay? getAutoplayMod() => Ruleset.Value.CreateInstance().GetAutoplayMod();

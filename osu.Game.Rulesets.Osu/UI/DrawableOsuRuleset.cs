@@ -23,7 +23,6 @@ using osu.Game.Screens.Play;
 using osuTK;
 using osu.Game.Rulesets.Osu.AI;
 using osu.Game.Rulesets.Osu.AI.Play;
-using osu.Framework.Logging;
 using osu.Game.AI;
 
 
@@ -53,7 +52,6 @@ namespace osu.Game.Rulesets.Osu.UI
         public DrawableOsuRuleset(Ruleset ruleset, IBeatmap beatmap, IReadOnlyList<Mod>? mods = null)
             : base(ruleset, beatmap, mods)
         {
-            Logger.Log("DrawableOsuRuleset Ready");
         }
 
         /*
@@ -67,11 +65,8 @@ namespace osu.Game.Rulesets.Osu.UI
         [BackgroundDependencyLoader]
         private void load(ReplayPlayer? replayPlayer)
         {
-            Logger.Log("Load Ready");
             sharedState = new();
             actionReader = new();
-            playingStateContainer = new();
-            objectTracker = new ObjectTracker(aIPlayfield, playingStateContainer);
             rewardTracker = new RewardTracker(aIPlayfield, sharedState);
 
 
@@ -124,31 +119,21 @@ namespace osu.Game.Rulesets.Osu.UI
 
             rewardTracker!.Clear();
         }
-        protected override ReplayInputHandler CreateReplayInputHandler(Replay replay)
-        {
-            Logger.Log("ReplayInputHandler ready");
-            return new OsuFramedReplayInputHandler(replay);
-        }
+        protected override ReplayInputHandler CreateReplayInputHandler(Replay replay) => new OsuFramedReplayInputHandler(replay);
+
 
 
         // Activating only when AIPlayer is activated
         protected override AIInputHandler CreateAIInputHandler(PlayingStateContainer playingStateContainer)
         {
-            Logger.Log($"AIInputHandler Created");
-            Logger.Log($"HashCode: {playingStateContainer.GetHashCode()}");
-
-            this.playingStateContainer = playingStateContainer;
+            this.playingStateContainer = playingStateContainer; // Get PlayingStateContainer here
             objectTracker = new ObjectTracker(aIPlayfield, playingStateContainer);
             observationWriter = new ObservationWriter(objectTracker, rewardTracker!);
             return new OsuAIInputHandler(actionReader!);
         }
 
-        protected override ReplayRecorder CreateReplayRecorder(Score score)
-        {
-            Logger.Log("ReplayRecorder Ready");
+        protected override ReplayRecorder CreateReplayRecorder(Score score) => new OsuReplayRecorder(score);
 
-            return new OsuReplayRecorder(score);
-        }
 
         public override double GameplayStartTime
         {
