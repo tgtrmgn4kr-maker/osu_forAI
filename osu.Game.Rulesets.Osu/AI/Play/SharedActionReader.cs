@@ -17,6 +17,7 @@ namespace osu.Game.Rulesets.Osu.AI.Play
 
         public byte K1;
         public byte K2;
+        public byte RestartRequest;
     }
     public struct OsuActionData
     {

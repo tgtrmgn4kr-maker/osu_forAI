@@ -2,6 +2,7 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System;
+using osu.Framework.Logging;
 using osu.Game.Screens.Play;
 
 namespace osu.Game.AI
@@ -10,9 +11,7 @@ namespace osu.Game.AI
     {
         public EnvironmentState State { get; private set; } = EnvironmentState.Idle;
         public EpisodeEndReason EndReason { get; private set; } = EpisodeEndReason.None;
-        public long EpisodeID { get; private set; }
         private PlayerLoader? playerLoader;
-        public bool IsPlaying => State == EnvironmentState.Playing;
         public EnvironmentController()
         {
         }
@@ -23,7 +22,6 @@ namespace osu.Game.AI
         public void AttachPlayerLoader(PlayerLoader playerLoader)
         {
             this.playerLoader = playerLoader;
-            playerLoader.EpisodeStarted += StartEpisode;
             playerLoader.PlayerCreated += player =>
             {
                 player.HealthProcessorLoaded += () =>
@@ -32,10 +30,11 @@ namespace osu.Game.AI
                 };
                 player.Exited += PlayerExited;
                 player.Passed += PlayerPassed;
-                State = EnvironmentState.WaitingForGamePlay;
+                player.OnGameplayStarted += StartEpisode;
+                State = EnvironmentState.Idle;
+                EndReason = EpisodeEndReason.None;
             };
-            State = EnvironmentState.WaitingForGamePlay;
-            EpisodeID = 0;
+            State = EnvironmentState.Idle;
         }
         /// <summary>
         /// Called when the current <see cref="Player"/> is no longer valid
@@ -61,10 +60,11 @@ namespace osu.Game.AI
         public void PlayerExited(Player player)
         {
             DetachPlayer(player);
+            State = EnvironmentState.Idle;
         }
         public void StartEpisode()
         {
-            EpisodeID++;
+            State = EnvironmentState.Playing;
             EndReason = EpisodeEndReason.None;
         }
         public void EndEpisode(EpisodeEndReason reason)
@@ -88,31 +88,32 @@ namespace osu.Game.AI
         public bool ResetRequest()
         {
             if (playerLoader?.CurrentPlayer is null)
-                return false;
+                throw new InvalidOperationException("PlayerLoader is not attached to this controller.");
 
-            if (State != EnvironmentState.Playing)
-                return false;
+            Logger.Log($"Reset requested. Current state: {State}"); // Debugging purpose only. Should not be visible in production.
+
+            if (!((State == EnvironmentState.Failed) || (State == EnvironmentState.Passed)))
+                throw new InvalidOperationException("PlayerLoader is not attached to this controller.");
 
             State = EnvironmentState.Resetting;
+            EndReason = EpisodeEndReason.None;
 
-            return playerLoader.Restart(true);
+            return playerLoader?.CurrentPlayer?.Restart(true) ?? throw new InvalidOperationException("PlayerLoader is not attached to this controller.");
         }
     }
-
     public enum EnvironmentState : byte
     {
-        Idle,
-        Playing,
-        Failed,
-        Passed,
-        Resetting,
-        WaitingForGamePlay,
+        Idle = 0,
+        Playing = 1,
+        Failed = 1 << 1,
+        Passed = 1 << 2,
+        Resetting = 1 << 3,
     }
     public enum EpisodeEndReason : byte
     {
-        None,
-        Failed,
-        Passed,
+        None = 0,
+        Failed = 1,
+        Passed = 2,
     }
 
 }

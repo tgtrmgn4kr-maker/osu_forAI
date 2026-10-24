@@ -23,8 +23,6 @@ using osu.Game.Users;
 using osu.Game.Utils;
 using osu.Game.AI;
 using WebCommonStrings = osu.Game.Resources.Localisation.Web.CommonStrings;
-using osu.Framework.Bindables;
-using osu.Framework.Logging;
 
 namespace osu.Game.Screens.Select
 {
@@ -57,16 +55,13 @@ namespace osu.Game.Screens.Select
 
         private PlayingStateContainer? playingStateContainer;
         private EnvironmentController? environmentController;
-        private RestartRequestHandler? restartRequestReader;
-        private Bindable<long> frameCountBindable = new();
 
         [BackgroundDependencyLoader]
         private void load(AudioManager audio)
         {
             sampleConfirmSelection = audio.Samples.Get(@"SongSelect/confirm-selection");
-            playingStateContainer = new(frameCountBindable);
             environmentController = new();
-            restartRequestReader = new RestartRequestHandler(environmentController);
+            playingStateContainer = new(environmentController);
 
             AddInternal(new SongSelectTouchInputDetector());
         }
@@ -182,23 +177,6 @@ namespace osu.Game.Screens.Select
 
             revertMods();
             return false;
-        }
-
-        protected override void Update()
-        {
-            base.Update();
-            /*
-            restartRequestReader?.Update();
-            frameCountBindable.Value++;
-            */
-
-            Logger.Log("SongSelect: Update");
-        }
-
-        protected override void Dispose(bool isDisposing)
-        {
-            base.Dispose(isDisposing);
-            restartRequestReader?.Dispose(); // Dispose the restart request reader
         }
 
         private ModAutoplay? getAutoplayMod() => Ruleset.Value.CreateInstance().GetAutoplayMod();

@@ -11,8 +11,6 @@ using osu.Game.Rulesets.Osu.Objects.Drawables;
 using osu.Game.Rulesets.Osu.Objects;
 using osu.Game.AI;
 using osuTK;
-using osu.Framework.Logging;
-
 
 
 namespace osu.Game.Rulesets.Osu.AI
@@ -173,7 +171,7 @@ namespace osu.Game.Rulesets.Osu.AI
             previousTime = 0;
             hasPreviousCursor = false;
         }
-        public void Update(long frameID)
+        public byte Update(long frameID)
         {
             frameObservation = new(); // Reset the observation
             IEnumerable<DrawableHitObject>? nextObjects = playfield?.HitObjectContainer.Get10AliveObjects();
@@ -181,10 +179,8 @@ namespace osu.Game.Rulesets.Osu.AI
             getNext10Objects(frameID, nextObjects); // Here a new frame observation is created
             trackSliderBall();
             trackSpinner();
-            trackGameState();
-
-            Logger.Log("ObjectTracker: Update");
-
+            byte state = trackGameState();
+            return state;
         }
         private void trackCursor()
         {
@@ -346,9 +342,10 @@ namespace osu.Game.Rulesets.Osu.AI
             frameObservation.SpinnerRuntimeData.RequiredSPM = firstSpinner.HitObject.SpinsRequiredForBonus / totalTime * 100; // SPM / 600
 
         }
-        private void trackGameState()
+        private byte trackGameState()
         {
             frameObservation.PlayingState = (byte)playingStateContainer.LocalUserPlayingState;
+            return frameObservation.PlayingState; // 0: NotPlaying, 1: Break, 2: Playing
         }
     }
 }

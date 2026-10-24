@@ -24,6 +24,7 @@ using osuTK;
 using osu.Game.Rulesets.Osu.AI;
 using osu.Game.Rulesets.Osu.AI.Play;
 using osu.Game.AI;
+using osu.Framework.Logging;
 
 
 namespace osu.Game.Rulesets.Osu.UI
@@ -42,8 +43,8 @@ namespace osu.Game.Rulesets.Osu.UI
         private RewardTracker rewardTracker = null!;
         private SharedTrackerState? sharedState = null;
         private SharedActionReader? actionReader = null;
-        private PlayingStateContainer? playingStateContainer = null;
         private ObservationWriter? observationWriter = null;
+        private SharedStatusHandler? statusHandler = null!;
 
 
 
@@ -113,9 +114,9 @@ namespace osu.Game.Rulesets.Osu.UI
             base.Update();
 
             long frameID = aIPlayfield.FrameID;
-            objectTracker!.Update(frameID);
-
+            byte state = objectTracker!.Update(frameID);
             observationWriter!.Write();
+            statusHandler!.Update(state);
 
             rewardTracker!.Clear();
         }
@@ -126,9 +127,9 @@ namespace osu.Game.Rulesets.Osu.UI
         // Activating only when AIPlayer is activated
         protected override AIInputHandler CreateAIInputHandler(PlayingStateContainer playingStateContainer)
         {
-            this.playingStateContainer = playingStateContainer; // Get PlayingStateContainer here
             objectTracker = new ObjectTracker(aIPlayfield, playingStateContainer);
-            observationWriter = new ObservationWriter(objectTracker, rewardTracker!);
+            statusHandler = new SharedStatusHandler(new RestartHandler(playingStateContainer));
+            observationWriter = new ObservationWriter(objectTracker, rewardTracker);
             return new OsuAIInputHandler(actionReader!);
         }
 
@@ -150,9 +151,9 @@ namespace osu.Game.Rulesets.Osu.UI
         {
             observationWriter?.Dispose();
             actionReader?.Dispose();
-
+            statusHandler?.Dispose();
+            Logger.Log("DrawableRuleset Disposed!");
             base.Dispose(isDisposing);
         }
-
     }
 }
