@@ -91,22 +91,14 @@ namespace osu.Game.Rulesets.Osu.AI
             playfield.OnAIPlayFieldNewDrawableHitObject += CollectObjects;
             this.state = state;
 
-            eventID = 0;
+            eventID = 1;
             rewardCount = 0;
             GetRewards = new RewardEvent[10];
         }
 
         internal void CollectObjects(DrawableHitObject obj)
         {
-            // Ensure that there is no object subscribed twice,
-            // otherwise it will cause duplicated triggering of ScoreGetter
-            if (!state.SubscribedObjects.Contains(obj.HitObject)
-                && !state.SubscribedInt.Contains(obj.HitObject.GetHashCode()))
-            {
-                obj.OnNewResult += ScoreGetter;
-                state.SubscribedObjects.Add(obj.HitObject);
-                state.SubscribedInt.Add(obj.HitObject.GetHashCode());
-            }
+            obj.OnNewResult += ScoreGetter;
         }
         public void ScoreGetter(DrawableHitObject obj, JudgementResult result)
         {

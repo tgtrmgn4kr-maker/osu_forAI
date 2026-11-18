@@ -48,6 +48,7 @@ namespace osu.Game.Rulesets.Osu.AI
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct OsuObjectsData
         {
+            public long ObjectId;
             // One hot encoding
             public byte IsCircle;
             public byte IsSlider;
@@ -60,6 +61,7 @@ namespace osu.Game.Rulesets.Osu.AI
             public double TimeToHit;
             public OsuObjectsData()
             {
+                ObjectId = 0;
                 IsCircle = 0;
                 IsSlider = 0;
                 IsSpinner = 0;
@@ -231,6 +233,10 @@ namespace osu.Game.Rulesets.Osu.AI
             {
                 // All the data is normalised
                 OsuObjectsData data = new();
+
+                playfield.ObjectToIdDict.TryGetValue(obj.HitObject, out long id);
+                data.ObjectId = id;
+
                 int objTypeInt = objectType[obj.GetType()];
 
                 if (objTypeInt == 1) // HitCircle

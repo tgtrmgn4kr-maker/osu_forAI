@@ -100,11 +100,11 @@ namespace osu.Game.Rulesets.Osu.UI
             /// Invoked if a new AliveObject is found
             /// </summary>
             public event Action<DrawableHitObject>? OnAIPlayFieldNewDrawableHitObject;
-            private readonly HashSet<HitObject> tracked = new();
+            public readonly Dictionary<HitObject, long> ObjectToIdDict = new(ReferenceEqualityComparer.Instance);
 
             public double CurrentTime;
             public Vector2 CursorPosition;
-
+            private long objectId = 1;
             public long FrameID;
 
             protected override void Update()
@@ -119,10 +119,11 @@ namespace osu.Game.Rulesets.Osu.UI
 
                 foreach (var obj in AliveObjects)
                 {
-                    if (!tracked.Add(obj.HitObject))
-                        continue;
-
-                    OnAIPlayFieldNewDrawableHitObject?.Invoke(obj);
+                    if (!ObjectToIdDict.ContainsKey(obj.HitObject))
+                    {
+                        ObjectToIdDict.Add(obj.HitObject, objectId++);
+                        OnAIPlayFieldNewDrawableHitObject?.Invoke(obj);
+                    }
                 }
             }
         }
